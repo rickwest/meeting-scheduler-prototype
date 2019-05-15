@@ -15,16 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MeetingController extends AbstractController
 {
-//    /**
-//     * @Route("/", name="meeting_index", methods={"GET"})
-//     */
-//    public function index(MeetingRepository $meetingRepository): Response
-//    {
-//        return $this->render('meeting/index.html.twig', [
-//            'meetings' => $meetingRepository->findAll(),
-//        ]);
-//    }
-
     /**
      * @Route("/new", name="meeting_new", methods={"GET","POST"})
      */
@@ -41,7 +31,8 @@ class MeetingController extends AbstractController
             $entityManager->persist($meeting);
             $entityManager->flush();
 
-            return $this->redirectToRoute('index');
+            $this->addFlash('success', 'Meeting initiated successfully');
+            return $this->redirectToRoute('dashboard');
         }
 
         return $this->render('meeting/new.html.twig', [

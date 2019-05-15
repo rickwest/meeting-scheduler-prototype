@@ -18,28 +18,37 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        // Create an admin user
-        $user = new User();
-        $user
-            ->setUsername('admin')
-            ->setEmail('admin@test.com')
-            ->setIsActive(true)
-        ;
-        $password = $this->encoder->encodePassword($user, '20E!xI&$Zx');
-        $user->setPassword($password);
+        $manager->persist($this->createUser('rick', 'west', 'rickwestdev@gmail.com', ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH']));
+        $manager->persist($this->createUser('mehmet', 'ozcan', 'M.B.Ozcan@shu.ac.uk', ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH']));
 
-        $manager->persist($user);
+        // Demo organisation users
+        $manager->persist($this->createUser('john'));
+        $manager->persist($this->createUser('james'));
+        $manager->persist($this->createUser('josh'));
+        $manager->persist($this->createUser('nick'));
+        $manager->persist($this->createUser('brian'));
+        $manager->persist($this->createUser('steve'));
+        $manager->persist($this->createUser('alex'));
+        $manager->persist($this->createUser('matt'));
+        $manager->persist($this->createUser('alison'));
+        $manager->persist($this->createUser('jessica'));
+        $manager->persist($this->createUser('hannah'));
 
-        $user = new User();
-        $user
-            ->setUsername('pete')
-            ->setEmail('P.C.Collingwood@shu.ac.uk')
-            ->setIsActive(true)
-        ;
-        $password = $this->encoder->encodePassword($user, 'pc');
-        $user->setPassword($password);
-
-        $manager->persist($user);
         $manager->flush();
+    }
+
+    public function createUser($name, $password = 'pp', $email = null, $roles = ['ROLE_DEMO'])
+    {
+        $user = new User();
+        $user
+            ->setUsername($name)
+            ->setEmail($email ? $email : ($name . '@meeting-scheduler.com'))
+            ->setIsActive(true)
+            ->setRoles($roles)
+        ;
+        $password = $this->encoder->encodePassword($user, $password);
+        $user->setPassword($password);
+
+        return $user;
     }
 }

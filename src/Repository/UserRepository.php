@@ -18,4 +18,11 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
+
+    public function findAllDemoUsers()
+    {
+        return array_filter($this->findAll(), function($user) {
+            return $user->hasRole('ROLE_DEMO');
+        });
+    }
 }

@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Repository\MeetingRepository;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AppController extends AbstractController
+class DashboardController extends AbstractController
 {
     /**
-     * @Route("/", name="index")
+     * @Route("/dashboard", name="dashboard")
      */
     public function index(MeetingRepository $meetings)
     {
@@ -34,21 +33,10 @@ class AppController extends AbstractController
             return $meeting->getScheduledSlot();
         });
 
-        return $this->render('app/index.html.twig', [
+        return $this->render('dashboard/index.html.twig', [
             'initiated' => $initiated,
             'proposed' => $proposed,
             'scheduled' => $scheduled,
-        ]);
-    }
-
-    public function impersonateUsers(UserRepository $users)
-    {
-        $usernames = array_map(function($user) {
-            return $user->getUsername();
-        }, $users->findAll());
-
-        return $this->render('app/partials/impersonateUsers.html.twig', [
-            'usernames' => $usernames,
         ]);
     }
 }

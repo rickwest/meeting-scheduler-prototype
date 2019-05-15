@@ -51,6 +51,11 @@ class User implements UserInterface
      */
     private $attendeeMeetings;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->meetings = new ArrayCollection();
@@ -112,7 +117,11 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH'];
+        $roles = $this->roles;
+
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
     public function getSalt()
@@ -182,5 +191,17 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function hasRole($role)
+    {
+        return in_array($role, $this->getRoles());
     }
 }

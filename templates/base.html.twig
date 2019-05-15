@@ -12,7 +12,7 @@
             <div id="app">
                 <nav class="navbar navbar-expand-md navbar-light">
                     <div class="container">
-                        <a class="navbar-brand" href="{{ path('index') }}">
+                        <a class="navbar-brand" href="{{ path(is_granted('ROLE_PREVIOUS_ADMIN') ? 'dashboard' : 'admin_index') }}">
                             <i class="far fa-calendar-alt"></i> Meeting Scheduler
                         </a>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,23 +22,24 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <!-- Left Side Of Navbar -->
                             <ul class="navbar-nav mr-auto">
-                                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                                {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
                                     <li class="alert alert-warning mb-0">
-                                        <strong>Prototype</strong>. Currently impersonating user: <strong>{{ app.user.username }}</strong>
+                                        Currently impersonating <strong>{{ app.user.username|capitalize }}</strong> -
+                                        <a href="{{ path('admin_index', {'_switch_user': '_exit'}) }}">Exit impersonation</a>
                                     </li>
                                 {% endif %}
                             </ul>
 
                             <!-- Right Side Of Navbar -->
                             <ul class="navbar-nav ml-auto">
-                                <!-- Authentication Links -->
-                                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    {{ render(controller(
+                                        'App\\Controller\\AdminController::impersonateUsers'
+                                    )) }}
+                                {% elseif is_granted('ROLE_DEMO') %}
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ path('meeting_new') }}">New Meeting</a>
                                     </li>
-                                    {{ render(controller(
-                                        'App\\Controller\\AppController::impersonateUsers'
-                                    )) }}
                                 {% endif %}
                             </ul>
                         </div>
@@ -49,6 +50,17 @@
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-md-8">
+                                {# read and display all flash messages #}
+                                {% for label, messages in app.flashes %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
                                 {% block content %}{% endblock %}
                             </div>
                         </div>
