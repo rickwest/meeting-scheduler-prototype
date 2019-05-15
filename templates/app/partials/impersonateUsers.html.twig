@@ -1,0 +1,15 @@
+<li class="nav-item dropdown">
+    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Switch User <span class="caret"></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+        {% for username in usernames %}
+            <a class="dropdown-item" href="{{ path('index', {_switch_user: username}) }}">
+                {{ username }}
+            </a>
+        {% endfor %}
+    </div>
+</li>
+
+
+

@@ -17,6 +17,7 @@ security:
             security: false
         main:
             anonymous: true
+            switch_user: true
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator

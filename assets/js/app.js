@@ -8,10 +8,13 @@
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 // const $ = require('jquery');
 
-let $ = require('jquery');
+window.$ = require('jquery');
 
 // Bootstrap Javascript
 import 'bootstrap';
+
+// Font Awesome
+import '@fortawesome/fontawesome-free/js/all';
 
 // Styles
 import '../sass/app.scss';

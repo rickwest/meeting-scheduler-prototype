@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -38,6 +40,22 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Meeting", mappedBy="initiator", orphanRemoval=true)
+     */
+    private $meetings;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Meeting", mappedBy="attendees")
+     */
+    private $attendeeMeetings;
+
+    public function __construct()
+    {
+        $this->meetings = new ArrayCollection();
+        $this->attendeeMeetings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -94,7 +112,7 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return ['ROLE_ADMIN'];
+        return ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH'];
     }
 
     public function getSalt()
@@ -105,5 +123,64 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function addMeeting(Meeting $meeting): self
+    {
+        if (!$this->meetings->contains($meeting)) {
+            $this->meetings[] = $meeting;
+            $meeting->setInitiator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMeeting(Meeting $meeting): self
+    {
+        if ($this->meetings->contains($meeting)) {
+            $this->meetings->removeElement($meeting);
+            // set the owning side to null (unless already changed)
+            if ($meeting->getInitiator() === $this) {
+                $meeting->setInitiator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getAttendeeMeetings(): Collection
+    {
+        return $this->attendeeMeetings;
+    }
+
+    public function addAttendeeMeeting(Meeting $attendeeMeeting): self
+    {
+        if (!$this->attendeeMeetings->contains($attendeeMeeting)) {
+            $this->attendeeMeetings[] = $attendeeMeeting;
+            $attendeeMeeting->addAttendee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttendeeMeeting(Meeting $attendeeMeeting): self
+    {
+        if ($this->attendeeMeetings->contains($attendeeMeeting)) {
+            $this->attendeeMeetings->removeElement($attendeeMeeting);
+            $attendeeMeeting->removeAttendee($this);
+        }
+
+        return $this;
     }
 }

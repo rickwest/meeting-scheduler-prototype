@@ -1,18 +1,104 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        Dashboard
-                    </div>
-                    <div class="card-body">
-                        You are logged in!
-                    </div>
-                </div>
-            </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            Your Meetings - <small>meetings that you have initiated</small>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for meeting in initiated %}
+                    <tr>
+                        <td>{{ meeting.id }}</td>
+                        <td>{{ meeting.title }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-info" href="{{ path('meeting_edit', {'id': meeting.id}) }}">Edit</a>
+                            <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">Cancel</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">You haven't initiated any meetings yet. <a href="{{ path('meeting_new') }}">Propose one now!</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            Proposals - <small>meetings that you have been invited to</small>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for meeting in proposed %}
+                    <tr>
+                        <td>{{ meeting.id }}</td>
+                        <td>{{ meeting.title }}</td>
+                        <td>{{ meeting.description }}</td>
+                        <td>
+                            <a href="{{ path('meeting_show', {'id': meeting.id}) }}">show</a>
+                            <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">You have no pending meeting proposals.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            Scheduled - <small>meetings scheduled for you to attend</small>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for meeting in scheduled %}
+                    <tr>
+                        <td>{{ meeting.id }}</td>
+                        <td>{{ meeting.title }}</td>
+                        <td>{{ meeting.description }}</td>
+                        <td>
+                            <a href="{{ path('meeting_show', {'id': meeting.id}) }}">show</a>
+                            <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">You have no scheduled meetings 🎉.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
