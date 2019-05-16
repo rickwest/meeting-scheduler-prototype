@@ -29,14 +29,9 @@ class Participant
      */
     private $important;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Meeting", mappedBy="participants")
-     */
-    private $meetings;
 
     public function __construct()
     {
-        $this->meetings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,34 +59,6 @@ class Participant
     public function setImportant($important)
     {
         $this->important = $important;
-        return $this;
-    }
-
-    /**
-     * @return Collection|Meeting[]
-     */
-    public function getMeetings(): Collection
-    {
-        return $this->meetings;
-    }
-
-    public function addMeeting(Meeting $meeting): self
-    {
-        if (!$this->meetings->contains($meeting)) {
-            $this->meetings[] = $meeting;
-            $meeting->addParticipant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMeeting(Meeting $meeting): self
-    {
-        if ($this->meetings->contains($meeting)) {
-            $this->meetings->removeElement($meeting);
-            $meeting->removeParticipant($this);
-        }
-
         return $this;
     }
 }

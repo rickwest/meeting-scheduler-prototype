@@ -50,7 +50,7 @@ class Meeting
     private $participantResponses;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Participant", inversedBy="meetings", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Participant", cascade={"persist", "remove"})
      */
     private $participants;
 
@@ -153,29 +153,6 @@ class Meeting
         return $this;
     }
 
-    public function addParticipant(Participant $attendee): self
-    {
-        if (!$this->participants->contains($attendee)) {
-            $this->participants[] = $attendee;
-            $attendee->setMeeting($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipant(Participant $attendee): self
-    {
-        if ($this->participants->contains($attendee)) {
-            $this->participants->removeElement($attendee);
-            // set the owning side to null (unless already changed)
-            if ($attendee->getMeeting() === $this) {
-                $attendee->setMeeting(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection|ParticipantResponse[]
      */
@@ -184,23 +161,23 @@ class Meeting
         return $this->participantResponses;
     }
 
-    public function addParticipantResponse(ParticipantResponse $attendeeResponse): self
+    public function addParticipantResponse(ParticipantResponse $participantResponse): self
     {
-        if (!$this->participantResponses->contains($attendeeResponse)) {
-            $this->participantResponses[] = $attendeeResponse;
-            $attendeeResponse->setMeeting($this);
+        if (!$this->participantResponses->contains($participantResponse)) {
+            $this->participantResponses[] = $participantResponse;
+            $participantResponse->setMeeting($this);
         }
 
         return $this;
     }
 
-    public function removeParticipantResponse(ParticipantResponse $attendeeResponse): self
+    public function removeParticipantResponse(ParticipantResponse $participantResponse): self
     {
-        if ($this->participantResponses->contains($attendeeResponse)) {
-            $this->participantResponses->removeElement($attendeeResponse);
+        if ($this->participantResponses->contains($participantResponse)) {
+            $this->participantResponses->removeElement($participantResponse);
             // set the owning side to null (unless already changed)
-            if ($attendeeResponse->getMeeting() === $this) {
-                $attendeeResponse->setMeeting(null);
+            if ($participantResponse->getMeeting() === $this) {
+                $participantResponse->setMeeting(null);
             }
         }
 
@@ -252,5 +229,23 @@ class Meeting
     public function countResponses()
     {
         return $this->getParticipantResponses()->count();
+    }
+
+    public function addParticipant(Participant $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): self
+    {
+        if ($this->participants->contains($participant)) {
+            $this->participants->removeElement($participant);
+        }
+
+        return $this;
     }
 }

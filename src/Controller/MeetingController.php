@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\ParticipantResponse;
 use App\Entity\Meeting;
-use App\Form\AttendeeResponseType;
 use App\Form\MeetingType;
+use App\Form\ParticipantResponseType;
 use App\Meeting\Scheduler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,7 +105,7 @@ class MeetingController extends AbstractController
             $participantResponse->setUser($this->getUser());
         }
 
-        $form = $this->createForm(AttendeeResponseType::class, $participantResponse, [
+        $form = $this->createForm(ParticipantResponseType::class, $participantResponse, [
             'slots' => $meeting->getProposedSlots(),
             'userIsImportant' => $meeting->userIsImportant($this->getUser())
         ]);

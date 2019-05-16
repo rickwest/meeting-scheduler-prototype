@@ -21,7 +21,7 @@
                     {% for meeting in initiated %}
                         <tr>
                             <td>{{ meeting.title }}</td>
-                            <td>{{ meeting.countResponses }} / {{ meeting.countAttendees }}</td>
+                            <td>{{ meeting.countResponses }} / {{ meeting.countParticipants }}</td>
                             <td><span class="badge badge-warning">{{ meeting.status }}</span></td>
                             <td>
                                 <a class="btn btn-sm btn-info" href="{{ path('meeting_edit', {'id': meeting.id}) }}">Edit Meeting</a>
