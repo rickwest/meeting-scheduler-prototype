@@ -269,12 +269,26 @@ class Meeting
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
+        $vals = array_map(function ($val) {
+            return $val->getUser()->getUsername();
+        }, $this->getParticipants()->toArray());
+
+        $countVals = array_count_values($vals);
+
         foreach ($this->getParticipants() as $participant) {
             if ($participant->getUser() === $this->getInitiator()) {
                 $context
                     ->buildViolation('Do you like talking to talk to yourself 🙃?')
                     ->addViolation()
                 ;
+            }
+
+            if ($countVals[$participant->getUser()->getUsername()] > 1)  {
+                $context
+                    ->buildViolation('You cannot invite the same participant twice')
+                    ->addViolation()
+                ;
+                return;
             }
         }
     }
