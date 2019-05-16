@@ -1,105 +1,118 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
+    <div class="card mb-4">
+        <div class="card-header">
+            Your Meetings -
+            <small>meetings that you have initiated</small>
+        </div>
+        <div class="card-body">
+            {% if initiated|length > 0 %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Responses</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for meeting in initiated %}
+                        <tr>
+                            <td>{{ meeting.title }}</td>
+                            <td>{{ meeting.countResponses }} / {{ meeting.countAttendees }}</td>
+                            <td><span class="badge badge-warning">{{ meeting.status }}</span></td>
+                            <td>
+                                <a class="btn btn-sm btn-info" href="{{ path('meeting_edit', {'id': meeting.id}) }}">Edit Meeting</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
 
-    <div class="card mb-4">
-        <div class="card-header">
-            Your Meetings - <small>meetings that you have initiated</small>
-        </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Title</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for meeting in initiated %}
-                    <tr>
-                        <td>{{ meeting.id }}</td>
-                        <td>{{ meeting.title }}</td>
-                        <td>
-                            <a class="btn btn-sm btn-info" href="{{ path('meeting_edit', {'id': meeting.id}) }}">Edit</a>
-                            <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">Cancel</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">You haven't initiated any meetings yet. <a href="{{ path('meeting_new') }}">Propose one now!</a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-meetings text-center">
+                    <img src="{{ asset('images/undraw_calendar_dutt.svg') }}" class="m-4">
+                    <p>You haven't initiated any meetings yet. <a href="{{ path('meeting_new') }}">Propose one now!</a>
+                    </p>
+                </div>
+            {% endif %}
         </div>
     </div>
     <div class="card mb-4">
         <div class="card-header">
-            Proposals - <small>meetings that you have been invited to</small>
+            Proposals -
+            <small>meetings that you have been invited to</small>
         </div>
         <div class="card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for meeting in proposed %}
+            {% if proposed|length > 0 %}
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>{{ meeting.id }}</td>
-                        <td>{{ meeting.title }}</td>
-                        <td>{{ meeting.description }}</td>
-                        <td>
-                            <a href="{{ path('meeting_show', {'id': meeting.id}) }}">show</a>
-                            <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>
-                        </td>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Responded</th>
+                        <th>Action</th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">You have no pending meeting proposals.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for meeting in proposed %}
+                        <tr>
+                            <td>{{ meeting.title }}</td>
+                            <td>{{ meeting.description }}</td>
+                            <td>{% if meeting.userHasResponded(app.user) %}<i class="fa fa-check text-success"></i>{% else %}<i class="fa fa-times text-danger"></i>{% endif %}</td>
+                            <td>
+                                <a href="{{ path('meeting_response', {'id': meeting.id}) }}" class="btn btn-sm btn-info">{{ meeting.userHasResponded(app.user) ? 'Edit Reponse' : 'Respond' }}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-meetings text-center">
+                    <img src="{{ asset('images/undraw_meeting_115p.svg') }}" class="m-4">
+                    <p>You have no pending meeting proposals.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
     <div class="card mb-4">
         <div class="card-header">
-            Scheduled - <small>meetings scheduled for you to attend</small>
+            Scheduled -
+            <small>meetings scheduled for you to attend</small>
         </div>
         <div class="card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for meeting in scheduled %}
+            {% if scheduled|length > 0 %}
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>{{ meeting.id }}</td>
-                        <td>{{ meeting.title }}</td>
-                        <td>{{ meeting.description }}</td>
-                        <td>
-                            <a href="{{ path('meeting_show', {'id': meeting.id}) }}">show</a>
-                            <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>
-                        </td>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>actions</th>
                     </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">You have no scheduled meetings 🎉.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for meeting in scheduled %}
+                        <tr>
+                            <td>{{ meeting.id }}</td>
+                            <td>{{ meeting.title }}</td>
+                            <td>{{ meeting.description }}</td>
+                            <td>
+                                <a href="{{ path('meeting_show', {'id': meeting.id}) }}">show</a>
+                                <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-meetings text-center">
+                    <img src="{{ asset('images/undraw_celebration_0jvk.svg') }}" class="m-4">
+                    <p>You have no scheduled meetings 🎉.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

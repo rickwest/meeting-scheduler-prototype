@@ -47,19 +47,19 @@ class User implements UserInterface
     private $meetings;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Meeting", mappedBy="attendees")
-     */
-    private $attendeeMeetings;
-
-    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private $roles = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\AttendeeResponse", mappedBy="user")
+     */
+    private $attendeeResponses;
+
     public function __construct()
     {
         $this->meetings = new ArrayCollection();
-        $this->attendeeMeetings = new ArrayCollection();
+        $this->attendeeResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -203,5 +203,36 @@ class User implements UserInterface
     public function hasRole($role)
     {
         return in_array($role, $this->getRoles());
+    }
+
+    /**
+     * @return Collection|AttendeeResponse[]
+     */
+    public function getAttendeeResponses(): Collection
+    {
+        return $this->attendeeResponses;
+    }
+
+    public function addAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    {
+        if (!$this->attendeeResponses->contains($attendeeResponse)) {
+            $this->attendeeResponses[] = $attendeeResponse;
+            $attendeeResponse->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    {
+        if ($this->attendeeResponses->contains($attendeeResponse)) {
+            $this->attendeeResponses->removeElement($attendeeResponse);
+            // set the owning side to null (unless already changed)
+            if ($attendeeResponse->getUser() === $this) {
+                $attendeeResponse->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

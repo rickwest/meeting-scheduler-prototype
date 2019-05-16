@@ -16,7 +16,7 @@ class SecurityController extends Controller
     {
         // if a user is already logged in redirect them
         if ($this->getUser()) {
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('admin_index');
         }
 
         // get the login error if there is one

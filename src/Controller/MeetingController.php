@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\AttendeeResponse;
 use App\Entity\Meeting;
+use App\Form\AttendeeResponseType;
 use App\Form\MeetingType;
-use App\Repository\MeetingRepository;
+use App\Meeting\Scheduler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,16 +44,6 @@ class MeetingController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="meeting_show", methods={"GET"})
-     */
-    public function show(Meeting $meeting): Response
-    {
-        return $this->render('meeting/show.html.twig', [
-            'meeting' => $meeting,
-        ]);
-    }
-
-    /**
      * @Route("/{id}/edit", name="meeting_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Meeting $meeting): Response
@@ -59,7 +51,7 @@ class MeetingController extends AbstractController
         // If user isn't the initiator then they can't edit
         if ($this->getUser() !== $meeting->getInitiator()) {
             $this->addFlash('danger', 'You must the the initiator of the meeting in order to edit it.');
-            return $this->redirectToRoute('meeting_show', [
+            return $this->redirectToRoute('dashboard', [
                 'id' => $meeting->getId(),
             ]);
         }
@@ -71,7 +63,9 @@ class MeetingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('meeting_index', [
+            $this->addFlash('success', 'Meeting saved successfully.');
+
+            return $this->redirectToRoute('meeting_edit', [
                 'id' => $meeting->getId(),
             ]);
         }
@@ -91,22 +85,50 @@ class MeetingController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($meeting);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Meeting deleted.');
         }
 
-        return $this->redirectToRoute('meeting_index');
+        return $this->redirectToRoute('dashboard');
     }
 
     /**
-     * @Route("/{id}", name="meeting_cancel", methods={"DELETE"})
+     * @Route("/{id}/response", name="meeting_response", methods={"GET","POST"})
      */
-    public function cancel(Request $request, Meeting $meeting): Response
+    public function response(Request $request, Meeting $meeting, Scheduler $scheduler)
     {
-        if ($this->isCsrfTokenValid('cancel'.$meeting->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($meeting);
-            $entityManager->flush();
+        $attendeeResponse = $meeting->getResponseForUser($this->getUser());
+
+        if (is_null($attendeeResponse)) {
+            $attendeeResponse = new AttendeeResponse();
+            $attendeeResponse->setMeeting($meeting);
+            $attendeeResponse->setUser($this->getUser());
         }
 
-        return $this->redirectToRoute('meeting_index');
+        $form = $this->createForm(AttendeeResponseType::class, $attendeeResponse, [
+            'slots' => $meeting->getProposedSlots(),
+            'userIsImportant' => $meeting->userIsImportant($this->getUser())
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Try and schedule meeting
+            $scheduler->schedule($meeting);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($attendeeResponse);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Response saved successfully.');
+
+            return $this->redirectToRoute('meeting_response', [
+                'id' => $meeting->getId(),
+            ]);
+        }
+
+        return $this->render('meeting/response.html.twig', [
+            'meeting' => $meeting,
+            'form' => $form->createView(),
+        ]);
     }
 }

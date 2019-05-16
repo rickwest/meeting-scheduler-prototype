@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Equipment;
+use App\Entity\Location;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -30,9 +32,38 @@ class AppFixtures extends Fixture
         $manager->persist($this->createUser('steve'));
         $manager->persist($this->createUser('alex'));
         $manager->persist($this->createUser('matt'));
-        $manager->persist($this->createUser('alison'));
-        $manager->persist($this->createUser('jessica'));
-        $manager->persist($this->createUser('hannah'));
+
+        // Equipment
+        $oop = new Equipment('Overhead-projector');
+        $workstation = new Equipment('Workstation');
+        $networkConnection = new Equipment('Network connection');
+        $phone = new Equipment('Telephone');
+
+        $manager->persist($oop);
+        $manager->persist($workstation);
+        $manager->persist($networkConnection);
+        $manager->persist($phone);
+
+        $mr1 = new Location('Meeting Room 1');
+        $mr1->addEquipment($oop);
+        $mr1->addEquipment($workstation);
+        $mr1->addEquipment($networkConnection);
+        $mr1->addEquipment($phone);
+
+        $mr2 = new Location('Meeting Room 2');
+        $mr2->addEquipment($workstation);
+        $mr2->addEquipment($networkConnection);
+
+        $lib = new Location('Library');
+        $lib->addEquipment($workstation);
+        $lib->addEquipment($networkConnection);
+
+        $cafe = new Location('Coffee Shop');
+
+        $manager->persist($mr1);
+        $manager->persist($mr2);
+        $manager->persist($lib);
+        $manager->persist($cafe);
 
         $manager->flush();
     }

@@ -14,10 +14,19 @@ class SlotType extends AbstractType
     {
         $builder
             ->add('date', DateTimeType::class, [
-                'date_widget' => 'single_text',
-                'time_widget' => 'single_text',
+                'date_widget' => 'choice',
+                'date_format' => 'ddMMMyyyy',
+                'view_timezone' => 'Europe/London',
+                'time_widget' => 'choice',
                 'time_label' => 'Time',
                 'date_label' => 'Date',
+                'placeholder' => [
+                    'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
+                    'hour' => 'Hour', 'minute' => 'Minute', 'second' => 'Second',
+                ],
+                'years' => ['2019'],
+                'hours' => ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
+                'minutes' => ['00', '15', '30', '45']
             ])
         ;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,13 +27,23 @@ class Attendee
     /**
      * @ORM\Column(type="boolean")
      */
-    private $required;
+    private $important;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Meeting", inversedBy="attendees")
      * @ORM\JoinColumn(nullable=false)
      */
     private $meeting;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Meeting", mappedBy="attendees")
+     */
+    private $meetings;
+
+    public function __construct()
+    {
+        $this->meetings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -50,15 +62,14 @@ class Attendee
         return $this;
     }
 
-    public function getRequired(): ?bool
+    public function getImportant()
     {
-        return $this->required;
+        return $this->important;
     }
 
-    public function setRequired(bool $required): self
+    public function setImportant($important)
     {
-        $this->required = $required;
-
+        $this->important = $important;
         return $this;
     }
 
@@ -70,6 +81,34 @@ class Attendee
     public function setMeeting(?Meeting $meeting): self
     {
         $this->meeting = $meeting;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Meeting[]
+     */
+    public function getMeetings(): Collection
+    {
+        return $this->meetings;
+    }
+
+    public function addMeeting(Meeting $meeting): self
+    {
+        if (!$this->meetings->contains($meeting)) {
+            $this->meetings[] = $meeting;
+            $meeting->addAttendee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMeeting(Meeting $meeting): self
+    {
+        if ($this->meetings->contains($meeting)) {
+            $this->meetings->removeElement($meeting);
+            $meeting->removeAttendee($this);
+        }
 
         return $this;
     }

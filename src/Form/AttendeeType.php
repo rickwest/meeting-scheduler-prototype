@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Attendee;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -24,9 +23,8 @@ class AttendeeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('required', CheckboxType::class, [
+            ->add('important', CheckboxType::class, [
                 'required' => false,
-                'help' => 'help'
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,

@@ -45,14 +45,20 @@ class Meeting
     private $scheduledSlot;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attendee", mappedBy="meeting", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\AttendeeResponse", mappedBy="meeting", orphanRemoval=true)
+     */
+    private $attendeeResponses;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Attendee", inversedBy="meetings", cascade={"persist", "remove"})
      */
     private $attendees;
 
     public function __construct()
     {
-        $this->attendees = new ArrayCollection();
         $this->proposedSlots = new ArrayCollection();
+        $this->attendeeResponses = new ArrayCollection();
+        $this->attendees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,5 +174,83 @@ class Meeting
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|AttendeeResponse[]
+     */
+    public function getAttendeeResponses(): Collection
+    {
+        return $this->attendeeResponses;
+    }
+
+    public function addAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    {
+        if (!$this->attendeeResponses->contains($attendeeResponse)) {
+            $this->attendeeResponses[] = $attendeeResponse;
+            $attendeeResponse->setMeeting($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    {
+        if ($this->attendeeResponses->contains($attendeeResponse)) {
+            $this->attendeeResponses->removeElement($attendeeResponse);
+            // set the owning side to null (unless already changed)
+            if ($attendeeResponse->getMeeting() === $this) {
+                $attendeeResponse->setMeeting(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function userHasResponded($user)
+    {
+        if ($this->getResponseForUser($user)) {
+            return true;
+        };
+
+        return false;
+    }
+
+    public function getResponseForUser($user)
+    {
+        $response = null;
+
+        foreach ($this->getAttendeeResponses() as $attendeeResponse) {
+            if ($attendeeResponse->getUser() === $user) {
+                $response = $attendeeResponse;
+            }
+        }
+        return $response;
+    }
+
+    public function userIsImportant($user)
+    {
+        return $this->getAttendees()->filter(function ($attendee) use ($user) {
+            return $user === $attendee && $attendee->isImportant();
+        });
+    }
+
+    public function status()
+    {
+        if ($this->getScheduledSlot()) {
+            return 'Scheduled';
+        }
+
+        return 'Awaiting Responses';
+    }
+
+    public function countAttendees()
+    {
+        return $this->getAttendees()->count();
+    }
+
+    public function countResponses()
+    {
+        return $this->getAttendeeResponses()->count();
     }
 }

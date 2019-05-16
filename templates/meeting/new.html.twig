@@ -3,6 +3,9 @@
 {% block title %}New Meeting{% endblock %}
 
 {% block content %}
+    <p>
+        <a href="{{ path('dashboard') }}"><i class="fas fa-angle-left"></i> Back to dashboard</a>
+    </p>
     <div class="card">
         <div class="card-header">
             Propose a new meeting
@@ -15,7 +18,7 @@
             <div id="attendee-fields-list" data-widget-tags="{{ "<div></div>"}}" data-prototype="
                 <div class='row' id='attendee-row-{{ form.attendees.vars.prototype.vars.name }}'>
                     <div class='col-md-6'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.user)|e }}</div></div>
-                    <div class='col-md-4'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.required)|e }}</div></div>
+                    <div class='col-md-4'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.important)|e }}</div></div>
                     <div class='col-md-2'><div class='form-group'><button type='button' onclick='deleteAttendee({{ form.attendees.vars.prototype.vars.name }})' class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                 </div>">
                 <label>Attendees</label>
@@ -23,7 +26,7 @@
                     <div>
                         <div class="row" id='attendee-row-{{ attendeeField.vars.name }}'>
                             <div class='col-md-6'><div class='form-group'>{{ form_widget(attendeeField.user)|e }}</div></div>
-                            <div class='col-md-4'><div class='form-group'>{{ form_widget(attendeeField.required)|e }}</div></div>
+                            <div class='col-md-4'><div class='form-group'>{{ form_widget(attendeeField.important)|e }}</div></div>
                             <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteAttendee({{ attendeeField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                         </div>
                     </div>
@@ -55,67 +58,13 @@
             </div>
             <button type="button" class="add-another-slot-widget btn btn-sm btn-outline-success" data-list="#slot-fields-list"><i class='fa fa-plus'></i> Add Slot</button>
             <hr>
+            {{ form_rest(form) }}
             <button class="btn btn-primary">Submit Proposal</button>
             {{ form_end(form) }}
-        </div>
-        <div class="card-footer">
-            <a href="{{ path('dashboard') }}">Back to dashboard</a>
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.add-another-attendee-widget').click(function (e) {
-                var attendeeList = $($(this).attr('data-list'));
-                // Try to find the counter of the list or use the length of the list
-                var attendeeCounter = attendeeList.data('attendee-widget-counter') | attendeeList.children().length;
-
-                // grab the prototype template
-                var newAttendeeWidget = attendeeList.attr('data-prototype');
-                // replace the "__name__" used in the id and name of the prototype
-                // with a number that's unique to your emails
-                // end name attribute looks like name="contact[emails][2]"
-                newAttendeeWidget = newAttendeeWidget.replace(/__name__/g, attendeeCounter);
-                // Increase the counter
-                attendeeCounter++;
-                // And store it, the length cannot be used if deleting widgets is allowed
-                attendeeList.data('attendee-widget-counter', attendeeCounter);
-
-                // create a new list element and add it to the list
-                var newAttendeeElem = $(attendeeList.attr('data-widget-tags')).html(newAttendeeWidget);
-                newAttendeeElem.appendTo(attendeeList);
-            });
-
-            $(document).ready(function () {
-                $('.add-another-slot-widget').click(function (e) {
-                    var slotList = $($(this).attr('data-list'));
-                    // Try to find the counter of the list or use the length of the list
-                    var slotCounter = slotList.data('slot-widget-counter') | slotList.children().length;
-
-                    // grab the prototype template
-                    var newSlotWidget = slotList.attr('data-prototype');
-                    // replace the "__name__" used in the id and name of the prototype
-                    // with a number that's unique to your emails
-                    // end name attribute looks like name="contact[emails][2]"
-                    newSlotWidget = newSlotWidget.replace(/__name__/g, slotCounter);
-                    // Increase the counter
-                    slotCounter++;
-                    // And store it, the length cannot be used if deleting widgets is allowed
-                    slotList.data('slot-widget-counter', slotCounter);
-
-                    // create a new list element and add it to the list
-                    var newslotElem = $(slotList.attr('data-widget-tags')).html(newSlotWidget);
-                    newslotElem.appendTo(slotList);
-                });
-            });
-            function deleteAttendee(index) {
-                $('#attendee-row-' + index).parent().remove();
-            }
-            function deleteSlot(index) {
-                $('#slot-row-' + index).parent().remove();
-            }
-        });
-    </script>
+    {% include 'meeting/partial/addRemoveJs.html.twig' %}
 {% endblock %}

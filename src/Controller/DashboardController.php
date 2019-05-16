@@ -15,28 +15,24 @@ class DashboardController extends AbstractController
     {
         $all = $meetings->findAll();
 
-        $initiated = array_filter($all, function($meeting) {
-            return $meeting->getInitiator() === $this->getUser();
-        });
-
-        $proposed = array_filter($all, function($meeting) {
-            foreach ($meeting->getAttendees() as $assignee) {
-                if ($assignee->getUser() === $this->getUser()) {
-                    return true;
+        $proposed = [];
+        foreach ($all as $meeting) {
+            foreach ($meeting->getAttendees() as $attendee) {
+                if ($attendee->getUser() === $this->getUser()) {
+                    $proposed[] = $meeting;
                 }
-                return false;
             }
-            return $meeting->getAdd == $this->getUser();
-        });
-
-        $scheduled = array_filter($all, function($meeting) {
-            return $meeting->getScheduledSlot();
-        });
+            ;
+        }
 
         return $this->render('dashboard/index.html.twig', [
-            'initiated' => $initiated,
+            'initiated' => array_filter($all, function($meeting) {
+                return $meeting->getInitiator() === $this->getUser();
+            }),
+            'scheduled' => array_filter($all, function($meeting) {
+                return $meeting->getScheduledSlot();
+            }),
             'proposed' => $proposed,
-            'scheduled' => $scheduled,
         ]);
     }
 }

@@ -2,12 +2,82 @@
 
 {% block title %}Edit Meeting{% endblock %}
 
-{% block body %}
-    <h1>Edit Meeting</h1>
+{% block content %}
+    <p>
+        <a href="{{ path('dashboard') }}"><i class="fas fa-angle-left"></i> Back to dashboard</a>
+    </p>
+    <div class="card mb-4">
+        <div class="card-header">
+            Edit meeting - <small>{{ meeting.title }}</small>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {# store the prototype on the data-prototype attribute #}
+            <div id="attendee-fields-list" data-widget-tags="{{ "<div></div>"}}" data-prototype="
+                <div class='row' id='attendee-row-{{ form.attendees.vars.prototype.vars.name }}'>
+                    <div class='col-md-6'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.user)|e }}</div></div>
+                    <div class='col-md-4'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.important)|e }}</div></div>
+                    <div class='col-md-2'><div class='form-group'><button type='button' onclick='deleteAttendee({{ form.attendees.vars.prototype.vars.name }})' class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
+                </div>">
+                <label>Attendees</label>
+                {% for attendeeField in form.attendees %}
+                    <div>
+                        <div class="row" id='attendee-row-{{ attendeeField.vars.name }}'>
+                            <div class='col-md-6'><div class='form-group'>{{ form_widget(attendeeField.user) }}</div></div>
+                            <div class='col-md-4'><div class='form-group'>{{ form_widget(attendeeField.important) }}</div></div>
+                            <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteAttendee({{ attendeeField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
+                        </div>
+                    </div>
+                    {{ form_errors(attendeeField) }}
+                {% endfor %}
+            </div>
+            <button type="button" class="add-another-attendee-widget btn btn-sm btn-outline-success" data-list="#attendee-fields-list"><i class='fa fa-plus'></i> Add Attendee</button>
 
-    {{ include('meeting/_form.html.twig', {'button_label': 'Update'}) }}
+            <hr>
+            {# store the prototype on the data-prototype attribute #}
 
-    <a href="{{ path('meeting_index') }}">back to list</a>
+            <div id="slot-fields-list" data-widget-tags="{{ "<div></div>"}}" data-prototype="
+                <div class='row' id='slot-row-{{ form.proposedSlots.vars.prototype.vars.name }}'>
+                    <div class='col-md-5'><div class='form-group'>{{ form_widget(form.proposedSlots.vars.prototype.date.children.date)|e }}</div></div>
+                    <div class='col-md-5'><div class='form-group'>{{ form_widget(form.proposedSlots.vars.prototype.date.children.time)|e }}</div></div>
+                    <div class='col-md-2'><div class='form-group'><button type='button' onclick='deleteSlot({{ form.proposedSlots.vars.prototype.vars.name }})' class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
+                </div>">
+                <label>Proposed Slots</label>
+                {% for slotField in form.proposedSlots %}
+                    <div>
+                        <div class="row" id='slot-row-{{ slotField.vars.name }}'>
+                            <div class="col-md-5"><div class='form-group'>{{ form_widget(slotField.date.children.date) }}</div></div>
+                            <div class="col-md-5"><div class='form-group'>{{ form_widget(slotField.date.children.time) }}</div></div>
+                            <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteSlot({{ slotField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
+                        </div>
+                    </div>
+                    {{ form_errors(slotField) }}
+                {% endfor %}
+            </div>
+            <button type="button" class="add-another-slot-widget btn btn-sm btn-outline-success" data-list="#slot-fields-list"><i class='fa fa-plus'></i> Add Slot</button>
+            <hr>
+            {{ form_rest(form) }}
+            <button class="btn btn-primary">Save Meeting</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Danger Zone - <small>Irreversible actions. Tread lightly!</small>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ path('meeting_delete', {'id': meeting.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ meeting.id) }}">
+                <button class="btn btn-danger">Delete</button>
+            </form>
 
-    {{ include('meeting/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {% include 'meeting/partial/addRemoveJs.html.twig' %}
 {% endblock %}

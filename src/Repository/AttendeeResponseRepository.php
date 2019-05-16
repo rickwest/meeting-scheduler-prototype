@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Attendees;
+use App\Entity\AttendeeResponse;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Attendees|null find($id, $lockMode = null, $lockVersion = null)
- * @method Attendees|null findOneBy(array $criteria, array $orderBy = null)
- * @method Attendees[]    findAll()
- * @method Attendees[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AttendeeResponse|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AttendeeResponse|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AttendeeResponse[]    findAll()
+ * @method AttendeeResponse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AttendeesRepository extends ServiceEntityRepository
+class AttendeeResponseRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Attendees::class);
+        parent::__construct($registry, AttendeeResponse::class);
     }
 
     // /**
-    //  * @return Attendees[] Returns an array of Attendees objects
+    //  * @return AttendeeResponse[] Returns an array of AttendeeResponse objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class AttendeesRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Attendees
+    public function findOneBySomeField($value): ?AttendeeResponse
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.exampleField = :val')

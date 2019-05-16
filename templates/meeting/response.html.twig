@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Response{% endblock %}
+
+{% block content %}
+    <p>
+        <a href="{{ path('dashboard') }}"><i class="fas fa-angle-left"></i> Back to dashboard</a>
+    </p>
+    <div class="card">
+        <div class="card-header">
+            Response to meeting proposal
+        </div>
+        <div class="card-body">
+            <p><strong>{{ meeting.initiator.username|capitalize }} </strong>has invited you to the meeting <strong>'{{ meeting.title }}'</strong>.</p>
+            <p>Please indicate the dates/times on which you would prefer the meeting to take place and also the dates that you cannot attend.</p>
+            <hr>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <hr>
+            <button class="btn btn-primary">Submit Response</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -53,7 +53,7 @@
                                 {# read and display all flash messages #}
                                 {% for label, messages in app.flashes %}
                                     {% for message in messages %}
-                                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                        <div id="flashes" class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
                                             {{ message }}
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -71,6 +71,15 @@
         {% endblock %}
 
         {{ encore_entry_script_tags('app') }}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                if ($("#flashes").length) {
+                    setTimeout(function() {
+                        $("#flashes").fadeOut('slow')
+                    }, 2000);
+                }
+            });
+        </script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
