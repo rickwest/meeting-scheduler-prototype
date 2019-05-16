@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SlotRepository")
@@ -17,11 +18,17 @@ class Slot
     private $id;
 
     /**
+     * @Assert\GreaterThan("today", message="Propoesed slots must be after {{ compared_value }}")
+     * @Assert\DateTime
+     * @Assert\NotBlank()
+     *
      * @ORM\Column(type="datetime")
      */
     private $date;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Meeting", inversedBy="proposedSlots")
      * @ORM\JoinColumn(nullable=false)
      */

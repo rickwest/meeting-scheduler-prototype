@@ -12,6 +12,7 @@
         </div>
         <div class="card-body">
             {{ form_start(form) }}
+            {{ form_errors(form) }}
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
             {# store the prototype on the data-prototype attribute #}
@@ -21,12 +22,12 @@
                     <div class='col-md-4'><div class='form-group'>{{ form_widget(form.participants.vars.prototype.important)|e }}</div></div>
                     <div class='col-md-2'><div class='form-group'><button type='button' onclick='deleteParticipant({{ form.participants.vars.prototype.vars.name }})' class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                 </div>">
-                <label>participants</label>
+                <label>Participants</label>
                 {% for participantField in form.participants %}
                     <div>
                         <div class="row" id='participant-row-{{ participantField.vars.name }}'>
-                            <div class='col-md-6'><div class='form-group'>{{ form_widget(participantField.user)|e }}</div></div>
-                            <div class='col-md-4'><div class='form-group'>{{ form_widget(participantField.important)|e }}</div></div>
+                            <div class='col-md-6'><div class='form-group'>{{ form_widget(participantField.user) }}</div></div>
+                            <div class='col-md-4'><div class='form-group'>{{ form_widget(participantField.important) }}</div></div>
                             <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteParticipant({{ participantField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                         </div>
                     </div>
@@ -48,8 +49,8 @@
                 {% for slotField in form.proposedSlots %}
                     <div>
                         <div class="row" id='slot-row-{{ slotField.vars.name }}'>
-                            <div class="col-md-6"><div class='form-group'>{{ form_widget(slotField.date.children.date) }}</div></div>
-                            <div class="col-md-6"><div class='form-group'>{{ form_widget(slotField.date.children.time) }}</div></div>
+                            <div class="col-md-5"><div class='form-group'>{{ form_widget(slotField.date.children.date) }}</div></div>
+                            <div class="col-md-5"><div class='form-group'>{{ form_widget(slotField.date.children.time) }}</div></div>
                             <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteSlot({{ slotField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                         </div>
                     </div>

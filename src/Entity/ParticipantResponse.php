@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @ORM\Entity(repositoryClass="ParticipantResponseRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ParticipantResponseRepository")
  */
 class ParticipantResponse
 {
@@ -176,5 +178,20 @@ class ParticipantResponse
         $this->preferredLocation = $preferredLocation;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        foreach ($this->getPreferenceSet() as $preferred) {
+            if ($this->getExclusionSet()->contains($preferred)) {
+                $context
+                    ->buildViolation('You cannot have the same slot in your preference set and your exclusion set')
+                    ->addViolation()
+                ;
+            }
+        }
     }
 }

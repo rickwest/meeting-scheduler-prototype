@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MeetingRepository")
@@ -19,6 +21,9 @@ class Meeting
     private $id;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max="190")
+     *
      * @ORM\Column(type="string", length=190)
      */
     private $title;
@@ -29,17 +34,24 @@ class Meeting
     private $description;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="meetings")
      * @ORM\JoinColumn(nullable=false)
      */
     private $initiator;
 
     /**
+     * @Assert\Count(min="1", minMessage = "You must specify at least one meeting slot")
+     * @Assert\Valid()
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Slot", mappedBy="meeting", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $proposedSlots;
 
     /**
+     * @Assert\Valid()
+     *
      * @ORM\OneToOne(targetEntity="App\Entity\Slot", cascade={"persist", "remove"})
      */
     private $scheduledSlot;
@@ -50,6 +62,9 @@ class Meeting
     private $participantResponses;
 
     /**
+     * @Assert\Count(min="1", minMessage = "You must specify at least one meeting participant",)
+     * @Assert\Valid()
+     *
      * @ORM\ManyToMany(targetEntity="App\Entity\Participant", cascade={"persist", "remove"})
      */
     private $participants;
@@ -247,5 +262,20 @@ class Meeting
         }
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser() === $this->getInitiator()) {
+                $context
+                    ->buildViolation('Do you like talking to talk to yourself 🙃?')
+                    ->addViolation()
+                ;
+            }
+        }
     }
 }

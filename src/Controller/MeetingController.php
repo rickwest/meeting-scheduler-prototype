@@ -23,12 +23,12 @@ class MeetingController extends AbstractController
     public function new(Request $request): Response
     {
         $meeting = new Meeting();
+        $meeting->setInitiator($this->getUser());
+
         $form = $this->createForm(MeetingType::class, $meeting);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $meeting->setInitiator($this->getUser());
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($meeting);
             $entityManager->flush();

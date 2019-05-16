@@ -51,6 +51,7 @@ class ParticipantResponseType extends AbstractType
                     'class' => Location::class,
                     'choice_label' => 'name',
                     'required' => false,
+                    'placeholder' => 'Please select...'
                 ]);
         }
     }

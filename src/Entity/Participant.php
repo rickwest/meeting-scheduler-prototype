@@ -2,12 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="ParticipantRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ParticipantRepository")
  */
 class Participant
 {
@@ -19,6 +18,8 @@ class Participant
     private $id;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
