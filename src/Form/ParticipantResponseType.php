@@ -2,17 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\AttendeeResponse;
+use App\Entity\ParticipantResponse;
 use App\Entity\Equipment;
 use App\Entity\Location;
 use App\Entity\Slot;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AttendeeResponseType extends AbstractType
+class ParticipantResponseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -59,7 +58,7 @@ class AttendeeResponseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => AttendeeResponse::class,
+            'data_class' => ParticipantResponse::class,
             'slots' => [],
             'userIsImportant' => false,
         ]);

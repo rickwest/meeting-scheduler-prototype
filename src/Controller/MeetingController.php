@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\AttendeeResponse;
+use App\Entity\ParticipantResponse;
 use App\Entity\Meeting;
 use App\Form\AttendeeResponseType;
 use App\Form\MeetingType;
@@ -97,15 +97,15 @@ class MeetingController extends AbstractController
      */
     public function response(Request $request, Meeting $meeting, Scheduler $scheduler)
     {
-        $attendeeResponse = $meeting->getResponseForUser($this->getUser());
+        $participantResponse = $meeting->getResponseForUser($this->getUser());
 
-        if (is_null($attendeeResponse)) {
-            $attendeeResponse = new AttendeeResponse();
-            $attendeeResponse->setMeeting($meeting);
-            $attendeeResponse->setUser($this->getUser());
+        if (is_null($participantResponse)) {
+            $participantResponse = new ParticipantResponse();
+            $participantResponse->setMeeting($meeting);
+            $participantResponse->setUser($this->getUser());
         }
 
-        $form = $this->createForm(AttendeeResponseType::class, $attendeeResponse, [
+        $form = $this->createForm(AttendeeResponseType::class, $participantResponse, [
             'slots' => $meeting->getProposedSlots(),
             'userIsImportant' => $meeting->userIsImportant($this->getUser())
         ]);
@@ -116,7 +116,7 @@ class MeetingController extends AbstractController
             $scheduler->schedule($meeting);
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($attendeeResponse);
+            $entityManager->persist($participantResponse);
             $entityManager->flush();
 
             $this->addFlash('success', 'Response saved successfully.');

@@ -15,25 +15,25 @@
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
             {# store the prototype on the data-prototype attribute #}
-            <div id="attendee-fields-list" data-widget-tags="{{ "<div></div>"}}" data-prototype="
-                <div class='row' id='attendee-row-{{ form.attendees.vars.prototype.vars.name }}'>
-                    <div class='col-md-6'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.user)|e }}</div></div>
-                    <div class='col-md-4'><div class='form-group'>{{ form_widget(form.attendees.vars.prototype.important)|e }}</div></div>
-                    <div class='col-md-2'><div class='form-group'><button type='button' onclick='deleteAttendee({{ form.attendees.vars.prototype.vars.name }})' class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
+            <div id="participant-fields-list" data-widget-tags="{{ "<div></div>"}}" data-prototype="
+                <div class='row' id='participant-row-{{ form.participants.vars.prototype.vars.name }}'>
+                    <div class='col-md-6'><div class='form-group'>{{ form_widget(form.participants.vars.prototype.user)|e }}</div></div>
+                    <div class='col-md-4'><div class='form-group'>{{ form_widget(form.participants.vars.prototype.important)|e }}</div></div>
+                    <div class='col-md-2'><div class='form-group'><button type='button' onclick='deleteParticipant({{ form.participants.vars.prototype.vars.name }})' class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                 </div>">
-                <label>Attendees</label>
-                {% for attendeeField in form.attendees %}
+                <label>participants</label>
+                {% for participantField in form.participants %}
                     <div>
-                        <div class="row" id='attendee-row-{{ attendeeField.vars.name }}'>
-                            <div class='col-md-6'><div class='form-group'>{{ form_widget(attendeeField.user) }}</div></div>
-                            <div class='col-md-4'><div class='form-group'>{{ form_widget(attendeeField.important) }}</div></div>
-                            <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteAttendee({{ attendeeField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
+                        <div class="row" id='participant-row-{{ participantField.vars.name }}'>
+                            <div class='col-md-6'><div class='form-group'>{{ form_widget(participantField.user) }}</div></div>
+                            <div class='col-md-4'><div class='form-group'>{{ form_widget(participantField.important) }}</div></div>
+                            <div class="col-md-2"><div class='form-group'><button type="button" onclick="deleteParticipant({{ participantField.vars.name }})" class='btn btn-sm btn-outline-danger'><i class='fa fa-trash'></i></button></div></div>
                         </div>
                     </div>
-                    {{ form_errors(attendeeField) }}
+                    {{ form_errors(participantField) }}
                 {% endfor %}
             </div>
-            <button type="button" class="add-another-attendee-widget btn btn-sm btn-outline-success" data-list="#attendee-fields-list"><i class='fa fa-plus'></i> Add Attendee</button>
+            <button type="button" class="add-another-participant-widget btn btn-sm btn-outline-success" data-list="#participant-fields-list"><i class='fa fa-plus'></i> Add Participant</button>
 
             <hr>
             {# store the prototype on the data-prototype attribute #}

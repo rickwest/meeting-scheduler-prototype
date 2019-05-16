@@ -19,8 +19,8 @@ class MeetingType extends AbstractType
             ->add('description', TextareaType::class, [
                 'required' => false,
             ])
-            ->add('attendees', CollectionType::class, [
-                'entry_type' => AttendeeType::class,
+            ->add('participants', CollectionType::class, [
+                'entry_type' => ParticipantType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'label' => false,

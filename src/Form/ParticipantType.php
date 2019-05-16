@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Attendee;
+use App\Entity\Participant;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AttendeeType extends AbstractType
+class ParticipantType extends AbstractType
 {
     private $users;
 
@@ -40,7 +40,7 @@ class AttendeeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Attendee::class,
+            'data_class' => Participant::class,
         ]);
     }
 }

@@ -45,20 +45,20 @@ class Meeting
     private $scheduledSlot;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AttendeeResponse", mappedBy="meeting", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ParticipantResponse", mappedBy="meeting", orphanRemoval=true)
      */
-    private $attendeeResponses;
+    private $participantResponses;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Attendee", inversedBy="meetings", cascade={"persist", "remove"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Participant", inversedBy="meetings", cascade={"persist", "remove"})
      */
-    private $attendees;
+    private $participants;
 
     public function __construct()
     {
         $this->proposedSlots = new ArrayCollection();
-        $this->attendeeResponses = new ArrayCollection();
-        $this->attendees = new ArrayCollection();
+        $this->participantResponses = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,9 +105,9 @@ class Meeting
     /**
      * @return Collection|User[]
      */
-    public function getAttendees(): Collection
+    public function getParticipants(): Collection
     {
-        return $this->attendees;
+        return $this->participants;
     }
     
     /**
@@ -153,20 +153,20 @@ class Meeting
         return $this;
     }
 
-    public function addAttendee(Attendee $attendee): self
+    public function addParticipant(Participant $attendee): self
     {
-        if (!$this->attendees->contains($attendee)) {
-            $this->attendees[] = $attendee;
+        if (!$this->participants->contains($attendee)) {
+            $this->participants[] = $attendee;
             $attendee->setMeeting($this);
         }
 
         return $this;
     }
 
-    public function removeAttendee(Attendee $attendee): self
+    public function removeParticipant(Participant $attendee): self
     {
-        if ($this->attendees->contains($attendee)) {
-            $this->attendees->removeElement($attendee);
+        if ($this->participants->contains($attendee)) {
+            $this->participants->removeElement($attendee);
             // set the owning side to null (unless already changed)
             if ($attendee->getMeeting() === $this) {
                 $attendee->setMeeting(null);
@@ -177,27 +177,27 @@ class Meeting
     }
 
     /**
-     * @return Collection|AttendeeResponse[]
+     * @return Collection|ParticipantResponse[]
      */
-    public function getAttendeeResponses(): Collection
+    public function getParticipantResponses(): Collection
     {
-        return $this->attendeeResponses;
+        return $this->participantResponses;
     }
 
-    public function addAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    public function addParticipantResponse(ParticipantResponse $attendeeResponse): self
     {
-        if (!$this->attendeeResponses->contains($attendeeResponse)) {
-            $this->attendeeResponses[] = $attendeeResponse;
+        if (!$this->participantResponses->contains($attendeeResponse)) {
+            $this->participantResponses[] = $attendeeResponse;
             $attendeeResponse->setMeeting($this);
         }
 
         return $this;
     }
 
-    public function removeAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    public function removeParticipantResponse(ParticipantResponse $attendeeResponse): self
     {
-        if ($this->attendeeResponses->contains($attendeeResponse)) {
-            $this->attendeeResponses->removeElement($attendeeResponse);
+        if ($this->participantResponses->contains($attendeeResponse)) {
+            $this->participantResponses->removeElement($attendeeResponse);
             // set the owning side to null (unless already changed)
             if ($attendeeResponse->getMeeting() === $this) {
                 $attendeeResponse->setMeeting(null);
@@ -220,9 +220,9 @@ class Meeting
     {
         $response = null;
 
-        foreach ($this->getAttendeeResponses() as $attendeeResponse) {
-            if ($attendeeResponse->getUser() === $user) {
-                $response = $attendeeResponse;
+        foreach ($this->getParticipantResponses() as $participantResponse) {
+            if ($participantResponse->getUser() === $user) {
+                $response = $participantResponse;
             }
         }
         return $response;
@@ -230,8 +230,8 @@ class Meeting
 
     public function userIsImportant($user)
     {
-        return $this->getAttendees()->filter(function ($attendee) use ($user) {
-            return $user === $attendee && $attendee->isImportant();
+        return $this->getParticipants()->filter(function ($participant) use ($user) {
+            return $user === $participant && $participant->isImportant();
         });
     }
 
@@ -244,13 +244,13 @@ class Meeting
         return 'Awaiting Responses';
     }
 
-    public function countAttendees()
+    public function countParticipants()
     {
-        return $this->getAttendees()->count();
+        return $this->getParticipants()->count();
     }
 
     public function countResponses()
     {
-        return $this->getAttendeeResponses()->count();
+        return $this->getParticipantResponses()->count();
     }
 }

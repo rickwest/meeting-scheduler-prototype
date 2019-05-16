@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AttendeeResponseRepository")
+ * @ORM\Entity(repositoryClass="ParticipantResponseRepository")
  */
-class AttendeeResponse
+class ParticipantResponse
 {
     /**
      * @ORM\Id()
@@ -31,13 +31,13 @@ class AttendeeResponse
     private $exclusionSet;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="attendeeResponses")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="participantResponses")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Meeting", inversedBy="attendeeResponses")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Meeting", inversedBy="participantResponses")
      * @ORM\JoinColumn(nullable=false)
      */
     private $meeting;

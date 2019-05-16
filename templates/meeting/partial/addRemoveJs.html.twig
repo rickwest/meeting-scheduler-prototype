@@ -1,24 +1,24 @@
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.add-another-attendee-widget').click(function (e) {
-            var attendeeList = $($(this).attr('data-list'));
+        $('.add-another-participant-widget').click(function (e) {
+            var participantList = $($(this).attr('data-list'));
             // Try to find the counter of the list or use the length of the list
-            var attendeeCounter = attendeeList.data('attendee-widget-counter') | attendeeList.children().length;
+            var participantCounter = participantList.data('participant-widget-counter') | participantList.children().length;
 
             // grab the prototype template
-            var newAttendeeWidget = attendeeList.attr('data-prototype');
+            var newParticipantWidget = participantList.attr('data-prototype');
             // replace the "__name__" used in the id and name of the prototype
             // with a number that's unique to your emails
             // end name attribute looks like name="contact[emails][2]"
-            newAttendeeWidget = newAttendeeWidget.replace(/__name__/g, attendeeCounter);
+            newParticipantWidget = newParticipantWidget.replace(/__name__/g, participantCounter);
             // Increase the counter
-            attendeeCounter++;
+            participantCounter++;
             // And store it, the length cannot be used if deleting widgets is allowed
-            attendeeList.data('attendee-widget-counter', attendeeCounter);
+            participantList.data('participant-widget-counter', participantCounter);
 
             // create a new list element and add it to the list
-            var newAttendeeElem = $(attendeeList.attr('data-widget-tags')).html(newAttendeeWidget);
-            newAttendeeElem.appendTo(attendeeList);
+            var newParticipantElem = $(participantList.attr('data-widget-tags')).html(newParticipantWidget);
+            newParticipantElem.appendTo(participantList);
         });
 
         $('.add-another-slot-widget').click(function (e) {
@@ -36,8 +36,8 @@
         });
     });
 
-    function deleteAttendee(index) {
-        $('#attendee-row-' + index).parent().remove();
+    function deleteParticipant(index) {
+        $('#participant-row-' + index).parent().remove();
     }
     
     function deleteSlot(index) {

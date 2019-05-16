@@ -31,7 +31,6 @@ class Equipment
     public function __construct($name)
     {
         $this->name = $name;
-        $this->rooms = new ArrayCollection();
         $this->locations = new ArrayCollection();
     }
 

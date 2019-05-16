@@ -42,6 +42,8 @@ class User implements UserInterface
     private $isActive;
 
     /**
+     * The meetings that the user has initiated.
+     *
      * @ORM\OneToMany(targetEntity="App\Entity\Meeting", mappedBy="initiator", orphanRemoval=true)
      */
     private $meetings;
@@ -52,14 +54,14 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AttendeeResponse", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\ParticipantResponse", mappedBy="user")
      */
-    private $attendeeResponses;
+    private $participantResponses;
 
     public function __construct()
     {
         $this->meetings = new ArrayCollection();
-        $this->attendeeResponses = new ArrayCollection();
+        $this->participantResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -165,34 +167,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Meeting[]
-     */
-    public function getAttendeeMeetings(): Collection
-    {
-        return $this->attendeeMeetings;
-    }
-
-    public function addAttendeeMeeting(Meeting $attendeeMeeting): self
-    {
-        if (!$this->attendeeMeetings->contains($attendeeMeeting)) {
-            $this->attendeeMeetings[] = $attendeeMeeting;
-            $attendeeMeeting->addAttendee($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAttendeeMeeting(Meeting $attendeeMeeting): self
-    {
-        if ($this->attendeeMeetings->contains($attendeeMeeting)) {
-            $this->attendeeMeetings->removeElement($attendeeMeeting);
-            $attendeeMeeting->removeAttendee($this);
-        }
-
-        return $this;
-    }
-
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -206,30 +180,30 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|AttendeeResponse[]
+     * @return Collection|ParticipantResponse[]
      */
-    public function getAttendeeResponses(): Collection
+    public function getParticipantResponses(): Collection
     {
-        return $this->attendeeResponses;
+        return $this->participantResponses;
     }
 
-    public function addAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    public function addParticipantResponse(ParticipantResponse $participantResponse): self
     {
-        if (!$this->attendeeResponses->contains($attendeeResponse)) {
-            $this->attendeeResponses[] = $attendeeResponse;
-            $attendeeResponse->setUser($this);
+        if (!$this->participantResponses->contains($participantResponse)) {
+            $this->participantResponses[] = $participantResponse;
+            $participantResponse->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAttendeeResponse(AttendeeResponse $attendeeResponse): self
+    public function removeParticipantResponse(ParticipantResponse $participantResponse): self
     {
-        if ($this->attendeeResponses->contains($attendeeResponse)) {
-            $this->attendeeResponses->removeElement($attendeeResponse);
+        if ($this->participantResponses->contains($participantResponse)) {
+            $this->participantResponses->removeElement($participantResponse);
             // set the owning side to null (unless already changed)
-            if ($attendeeResponse->getUser() === $this) {
-                $attendeeResponse->setUser(null);
+            if ($participantResponse->getUser() === $this) {
+                $participantResponse->setUser(null);
             }
         }
 

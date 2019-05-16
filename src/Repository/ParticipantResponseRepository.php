@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\AttendeeResponse;
+use App\Entity\ParticipantResponse;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method AttendeeResponse|null find($id, $lockMode = null, $lockVersion = null)
- * @method AttendeeResponse|null findOneBy(array $criteria, array $orderBy = null)
- * @method AttendeeResponse[]    findAll()
- * @method AttendeeResponse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ParticipantResponse|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ParticipantResponse|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ParticipantResponse[]    findAll()
+ * @method ParticipantResponse[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AttendeeResponseRepository extends ServiceEntityRepository
+class ParticipantResponseRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, AttendeeResponse::class);
+        parent::__construct($registry, ParticipantResponse::class);
     }
 
     // /**

@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AttendeeRepository")
+ * @ORM\Entity(repositoryClass="ParticipantRepository")
  */
-class Attendee
+class Participant
 {
     /**
      * @ORM\Id()
@@ -30,13 +30,7 @@ class Attendee
     private $important;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Meeting", inversedBy="attendees")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $meeting;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Meeting", mappedBy="attendees")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Meeting", mappedBy="participants")
      */
     private $meetings;
 
@@ -73,18 +67,6 @@ class Attendee
         return $this;
     }
 
-    public function getMeeting(): ?Meeting
-    {
-        return $this->meeting;
-    }
-
-    public function setMeeting(?Meeting $meeting): self
-    {
-        $this->meeting = $meeting;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Meeting[]
      */
@@ -97,7 +79,7 @@ class Attendee
     {
         if (!$this->meetings->contains($meeting)) {
             $this->meetings[] = $meeting;
-            $meeting->addAttendee($this);
+            $meeting->addParticipant($this);
         }
 
         return $this;
@@ -107,7 +89,7 @@ class Attendee
     {
         if ($this->meetings->contains($meeting)) {
             $this->meetings->removeElement($meeting);
-            $meeting->removeAttendee($this);
+            $meeting->removeParticipant($this);
         }
 
         return $this;

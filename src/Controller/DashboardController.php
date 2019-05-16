@@ -17,8 +17,8 @@ class DashboardController extends AbstractController
 
         $proposed = [];
         foreach ($all as $meeting) {
-            foreach ($meeting->getAttendees() as $attendee) {
-                if ($attendee->getUser() === $this->getUser()) {
+            foreach ($meeting->getParticipants() as $participant) {
+                if ($participant->getUser() === $this->getUser()) {
                     $proposed[] = $meeting;
                 }
             }
