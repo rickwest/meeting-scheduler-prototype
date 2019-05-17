@@ -118,7 +118,7 @@ class Meeting
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|Participant[]
      */
     public function getParticipants(): Collection
     {

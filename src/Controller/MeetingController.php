@@ -46,7 +46,7 @@ class MeetingController extends AbstractController
     /**
      * @Route("/{id}/edit", name="meeting_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Meeting $meeting): Response
+    public function edit(Request $request, Meeting $meeting, Scheduler $scheduler): Response
     {
         // If user isn't the initiator then they can't edit
         if ($this->getUser() !== $meeting->getInitiator()) {
@@ -61,6 +61,9 @@ class MeetingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Try and schedule meeting
+            $scheduler->schedule($meeting);
+
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'Meeting saved successfully.');
