@@ -87,22 +87,20 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Title</th>
-                        <th>Description</th>
-                        <th>actions</th>
+                        <th>Scheduled Date</th>
+{#                        <th>actions</th>#}
                     </tr>
                     </thead>
                     <tbody>
                     {% for meeting in scheduled %}
                         <tr>
-                            <td>{{ meeting.id }}</td>
                             <td>{{ meeting.title }}</td>
-                            <td>{{ meeting.description }}</td>
-                            <td>
-                                <a href="{{ path('meeting_show', {'id': meeting.id}) }}">show</a>
-                                <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>
-                            </td>
+                            <td>{{ meeting.scheduledSlot.date|date('d/M/y H:i') }}</td>
+{#                            <td>{{ meeting.description }}</td>#}
+{#                            <td>#}
+{#                                <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>#}
+{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>

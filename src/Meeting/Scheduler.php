@@ -24,7 +24,7 @@ class Scheduler
         $nonImportantResponses = [];
 
         foreach ($meeting->getParticipantResponses() as $response) {
-            if (in_array($importantUsers, $response->getUser())) {
+            if (in_array($response->getUser(),$importantUsers)) {
                 $importantResponses[] = $response;
             } else {
                 $nonImportantResponses[] = $response;
@@ -48,14 +48,40 @@ class Scheduler
         $excludedSlots = [];
 
         foreach ($meeting->getParticipantResponses() as $response) {
-            $preferredSlots = array_merge($preferredSlots, $response->getPreferenceSet());
-            $excludedSlots = array_merge($excludedSlots, $response->getExclusionSet());
+            $preferredSlots = array_merge($preferredSlots, $response->getPreferenceSet()->toArray());
+            $excludedSlots = array_merge($excludedSlots, $response->getExclusionSet()->toArray());
         }
 
-        // Neautral slots slpots
-        // Remove all the excluded slots
+        // Remove preferred slots that are in excluded slots
+        foreach ($preferredSlots as $preferredSlot) {
+            foreach ($excludedSlots as $excludedSlot) {
+                if ($preferredSlot === $excludedSlot) {
+                    unset($preferredSlot);
+                }
+            }
+        }
 
-        // Look across all preference sets and look for the most popular common date
+        if (count($preferredSlots) > 0) {
+            // For now just take the first but might want to take the most recent in future.
+            $meeting->setScheduledSlot($preferredSlots[0]);
+            return $meeting;
+        }
+
+        $allSlots = $meeting->getProposedSlots();
+
+        foreach ($allSlots as $allSlot) {
+            foreach ($excludedSlots as $excludedSlot) {
+                if ($allSlot === $excludedSlot) {
+                    unset($allSlot);
+                }
+            }
+        }
+
+        if (count($allSlots) > 0) {
+            $meeting->setScheduledSlot($allSlots[0]);
+            return $meeting;
+        }
+
         return $meeting;
     }
 }
