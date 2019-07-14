@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ParticipantRepository")
@@ -29,7 +29,6 @@ class Participant
      * @ORM\Column(type="boolean")
      */
     private $important;
-
 
     public function __construct()
     {
@@ -60,6 +59,7 @@ class Participant
     public function setImportant($important)
     {
         $this->important = $important;
+
         return $this;
     }
 }

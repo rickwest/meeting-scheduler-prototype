@@ -124,7 +124,7 @@ class Meeting
     {
         return $this->participants;
     }
-    
+
     /**
      * @return Collection|Slot[]
      */
@@ -203,7 +203,7 @@ class Meeting
     {
         if ($this->getResponseForUser($user)) {
             return true;
-        };
+        }
 
         return false;
     }
@@ -217,6 +217,7 @@ class Meeting
                 $response = $participantResponse;
             }
         }
+
         return $response;
     }
 
@@ -283,11 +284,12 @@ class Meeting
                 ;
             }
 
-            if ($countVals[$participant->getUser()->getUsername()] > 1)  {
+            if ($countVals[$participant->getUser()->getUsername()] > 1) {
                 $context
                     ->buildViolation('You cannot invite the same participant twice')
                     ->addViolation()
                 ;
+
                 return;
             }
         }

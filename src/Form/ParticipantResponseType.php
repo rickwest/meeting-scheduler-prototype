@@ -2,9 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\ParticipantResponse;
 use App\Entity\Equipment;
 use App\Entity\Location;
+use App\Entity\ParticipantResponse;
 use App\Entity\Slot;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -18,7 +18,7 @@ class ParticipantResponseType extends AbstractType
         $builder
             ->add('preferenceSet', EntityType::class, [
                 'class' => Slot::class,
-                'choice_label' => function($slot) {
+                'choice_label' => function ($slot) {
                     return $slot->getDate()->format('d/M/y H:i');
                 },
                 'choices' => $options['slots'],
@@ -28,7 +28,7 @@ class ParticipantResponseType extends AbstractType
             ])
             ->add('exclusionSet', EntityType::class, [
                 'class' => Slot::class,
-                'choice_label' => function($slot) {
+                'choice_label' => function ($slot) {
                     return $slot->getDate()->format('d/M/y H:i');
                 },
                 'choices' => $options['slots'],
@@ -51,7 +51,7 @@ class ParticipantResponseType extends AbstractType
                     'class' => Location::class,
                     'choice_label' => 'name',
                     'required' => false,
-                    'placeholder' => 'Please select...'
+                    'placeholder' => 'Please select...',
                 ]);
         }
     }

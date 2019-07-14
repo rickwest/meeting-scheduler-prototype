@@ -24,7 +24,7 @@ class Scheduler
         $nonImportantResponses = [];
 
         foreach ($meeting->getParticipantResponses() as $response) {
-            if (in_array($response->getUser(),$importantUsers)) {
+            if (in_array($response->getUser(), $importantUsers)) {
                 $importantResponses[] = $response;
             } else {
                 $nonImportantResponses[] = $response;
@@ -64,6 +64,7 @@ class Scheduler
         if (count($preferredSlots) > 0) {
             // For now just take the first but might want to take the most recent in future.
             $meeting->setScheduledSlot($preferredSlots[0]);
+
             return $meeting;
         }
 
@@ -79,6 +80,7 @@ class Scheduler
 
         if (count($allSlots) > 0) {
             $meeting->setScheduledSlot($allSlots[0]);
+
             return $meeting;
         }
 

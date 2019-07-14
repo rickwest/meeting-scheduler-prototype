@@ -21,7 +21,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function findAllDemoUsers()
     {
-        return array_filter($this->findAll(), function($user) {
+        return array_filter($this->findAll(), function ($user) {
             return $user->hasRole('ROLE_DEMO');
         });
     }

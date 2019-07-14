@@ -22,14 +22,13 @@ class DashboardController extends AbstractController
                     $proposed[] = $meeting;
                 }
             }
-            ;
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'initiated' => array_filter($all, function($meeting) {
+            'initiated' => array_filter($all, function ($meeting) {
                 return $meeting->getInitiator() === $this->getUser();
             }),
-            'scheduled' => array_filter($all, function($meeting) {
+            'scheduled' => array_filter($all, function ($meeting) {
                 return $meeting->getScheduledSlot();
             }),
             'proposed' => $proposed,

@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\ParticipantResponse;
 use App\Entity\Meeting;
+use App\Entity\ParticipantResponse;
 use App\Form\MeetingType;
 use App\Form\ParticipantResponseType;
 use App\Meeting\Scheduler;
@@ -34,6 +34,7 @@ class MeetingController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Meeting initiated successfully');
+
             return $this->redirectToRoute('dashboard');
         }
 
@@ -51,6 +52,7 @@ class MeetingController extends AbstractController
         // If user isn't the initiator then they can't edit
         if ($this->getUser() !== $meeting->getInitiator()) {
             $this->addFlash('danger', 'You must the the initiator of the meeting in order to edit it.');
+
             return $this->redirectToRoute('dashboard', [
                 'id' => $meeting->getId(),
             ]);
@@ -110,7 +112,7 @@ class MeetingController extends AbstractController
 
         $form = $this->createForm(ParticipantResponseType::class, $participantResponse, [
             'slots' => $meeting->getProposedSlots(),
-            'userIsImportant' => $meeting->userIsImportant($this->getUser())
+            'userIsImportant' => $meeting->userIsImportant($this->getUser()),
         ]);
         $form->handleRequest($request);
 

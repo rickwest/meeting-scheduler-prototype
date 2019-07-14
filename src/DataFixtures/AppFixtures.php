@@ -73,7 +73,7 @@ class AppFixtures extends Fixture
         $user = new User();
         $user
             ->setUsername($name)
-            ->setEmail($email ? $email : ($name . '@meeting-scheduler.com'))
+            ->setEmail($email ? $email : ($name.'@meeting-scheduler.com'))
             ->setIsActive(true)
             ->setRoles($roles)
         ;

@@ -28,7 +28,7 @@ class ParticipantType extends AbstractType
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => function($user) {
+                'choice_label' => function ($user) {
                     return ucfirst($user->getUsername());
                 },
                 'placeholder' => 'Please select a member of staff...',

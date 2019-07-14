@@ -34,7 +34,7 @@ class DemoResetCommand extends Command
         $deleted = 0;
         foreach ($meetings as $meeting) {
             $this->em->remove($meeting);
-            $deleted++;
+            ++$deleted;
         }
 
         $this->em->flush();
