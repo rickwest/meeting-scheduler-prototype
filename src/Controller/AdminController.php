@@ -19,6 +19,10 @@ class AdminController extends AbstractController
      */
     public function index()
     {
+        if ($this->getUser()->hasRole('ROLE_DEMO')) {
+            return $this->redirectToRoute('dashboard');
+        }
+
         return $this->render('admin/index.html.twig');
     }
 
