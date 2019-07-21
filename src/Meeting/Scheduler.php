@@ -55,7 +55,7 @@ class Scheduler
         // Remove preferred slots that are in excluded slots
         foreach ($preferredSlots as $preferredSlot) {
             foreach ($excludedSlots as $excludedSlot) {
-                if ($preferredSlot === $excludedSlot) {
+                if (isset($preferredSlot) && $preferredSlot === $excludedSlot) {
                     unset($preferredSlot);
                 }
             }
@@ -72,7 +72,7 @@ class Scheduler
 
         foreach ($allSlots as $allSlot) {
             foreach ($excludedSlots as $excludedSlot) {
-                if ($allSlot === $excludedSlot) {
+                if (isset($allSlot) && $allSlot=== $excludedSlot) {
                     unset($allSlot);
                 }
             }
