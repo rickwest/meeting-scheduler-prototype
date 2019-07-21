@@ -72,7 +72,7 @@ class Scheduler
 
         foreach ($allSlots as $allSlot) {
             foreach ($excludedSlots as $excludedSlot) {
-                if (isset($allSlot) && $allSlot=== $excludedSlot) {
+                if (isset($allSlot) && $allSlot === $excludedSlot) {
                     unset($allSlot);
                 }
             }
