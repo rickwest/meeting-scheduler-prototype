@@ -1,7 +1,12 @@
 language: php
+
 php:
   - '7.1'
   - '7.2'
+
+env:
+  global:
+    - APP_ENV=test
 
 script:
   - vendor/bin/phpstan analyse --no-interaction --no-progress
