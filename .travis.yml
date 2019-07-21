@@ -14,3 +14,4 @@ before_script:
 
 scripts:
   - ./bin/phpunit
+  - ./vendor/bin/phpstan analyse --no-interaction
