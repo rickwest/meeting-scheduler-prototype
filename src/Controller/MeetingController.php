@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Meeting;
+use App\Entity\Notification;
 use App\Entity\ParticipantResponse;
 use App\Form\MeetingType;
 use App\Form\ParticipantResponseType;
@@ -117,12 +118,22 @@ class MeetingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Try and schedule meeting
-            $scheduler->schedule($meeting);
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($participantResponse);
+
+            if ($participantResponse->allExcluded()) {
+                $notification = new Notification();
+                $notification->setTitle('Cannot schedule meeting!');
+                $notification->setMessage($this->getUser()->getUsername().' is unable to attend your meeting <b>'.$meeting->getTitle().'</b>. To schedule this meeting you must remove '.$this->getUser()->getUsername().' as a participant or propose some additional slots.');
+                $notification->setUser($meeting->getInitiator());
+                $notification->setRead(false);
+                $entityManager->persist($notification);
+            }
+
             $entityManager->flush();
+
+            // Try and schedule meeting
+            $scheduler->schedule($meeting);
 
             $this->addFlash('success', 'Response saved successfully.');
 

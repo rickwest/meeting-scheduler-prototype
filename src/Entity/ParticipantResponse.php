@@ -180,6 +180,13 @@ class ParticipantResponse
         return $this;
     }
 
+    public function allExcluded()
+    {
+        return !is_null($this->getMeeting())
+            ? ($this->getMeeting()->getProposedSlots()->toArray() == $this->getExclusionSet()->toArray())
+            : false;
+    }
+
     /**
      * @Assert\Callback
      */

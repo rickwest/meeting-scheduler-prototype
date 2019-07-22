@@ -1,6 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
+    {% if notifications is defined and notifications|length > 0 %}
+        <div class="card mb-4" style="border-left-width: .25rem;border-left-color: #5bc0de;">
+            <div class="card-header">
+                Notifications - <small>Hear Ye, Hear Ye <i class="fas fa-bullhorn"></i></small>
+            </div>
+            <div class="card-body">
+                <ul>
+                    {% for notification in notifications %}
+                        <li><strong>{{ notification.title }}</strong> - {{ notification.message|raw }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="card mb-4">
         <div class="card-header">
             Your Meetings -

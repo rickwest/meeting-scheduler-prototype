@@ -32,6 +32,7 @@ class DashboardController extends AbstractController
                 return $meeting->getScheduledSlot();
             }),
             'proposed' => $proposed,
+            'notifications' => $this->getUser()->getNotifications(),
         ]);
     }
 }

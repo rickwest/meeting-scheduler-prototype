@@ -43,6 +43,7 @@ class Meeting
 
     /**
      * @Assert\Count(min="1", minMessage = "You must specify at least one meeting slot")
+     * @Assert\Count(max="10", maxMessage = "You can specify a maximum of 10 meething slots")
      * @Assert\Valid()
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Slot", mappedBy="meeting", cascade={"persist", "remove"}, orphanRemoval=true)
