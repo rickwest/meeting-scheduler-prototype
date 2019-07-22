@@ -24,14 +24,14 @@ class AppFixtures extends Fixture
         $manager->persist($this->createUser('mehmet', 'ozcan', 'M.B.Ozcan@shu.ac.uk', ['ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH']));
 
         // Demo organisation users
-        $manager->persist($this->createUser('john'));
-        $manager->persist($this->createUser('james'));
-        $manager->persist($this->createUser('josh'));
-        $manager->persist($this->createUser('nick'));
-        $manager->persist($this->createUser('brian'));
-        $manager->persist($this->createUser('steve'));
-        $manager->persist($this->createUser('alex'));
-        $manager->persist($this->createUser('matt'));
+        $manager->persist($this->createUser('John'));
+        $manager->persist($this->createUser('James'));
+        $manager->persist($this->createUser('Josh'));
+        $manager->persist($this->createUser('Nick'));
+        $manager->persist($this->createUser('Brian'));
+        $manager->persist($this->createUser('Steve'));
+        $manager->persist($this->createUser('Alex'));
+        $manager->persist($this->createUser('Matt'));
 
         // Equipment
         $oop = new Equipment('Overhead-projector');
