@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Meeting;
+use App\Entity\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,5 +40,13 @@ class DemoResetCommand extends Command
 
         $this->em->flush();
         $output->writeln($deleted.' meetings deleted.');
+
+        $notifications = $this->em->getRepository(Notification::class)->findAll();
+
+        foreach ($notifications as $notification) {
+            $this->em->remove($notification);
+            ++$deleted;
+        }
+        $output->writeln('Notifications deleted.');
     }
 }
