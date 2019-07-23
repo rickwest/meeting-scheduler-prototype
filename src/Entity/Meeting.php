@@ -224,15 +224,23 @@ class Meeting
 
     public function userIsImportant($user)
     {
-        return $this->getParticipants()->filter(function ($participant) use ($user) {
-            return $user === $participant && $participant->isImportant();
-        });
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser() === $user) {
+                return $participant->getImportant();
+            }
+        }
     }
 
     public function status()
     {
         if ($this->getScheduledSlot()) {
             return 'Scheduled';
+        }
+
+        foreach ($this->getParticipantResponses() as $participantResponse) {
+            if ($participantResponse->allExcluded() && $this->userIsImportant($participantResponse->getUser())) {
+                return 'Action Required';
+            }
         }
 
         return 'Awaiting Responses';

@@ -18,7 +18,7 @@ class Slot
     private $id;
 
     /**
-     * @Assert\GreaterThan("today", message="Proposed slots must be after {{ compared_value }}")
+     * @Assert\GreaterThan("+3 days", message="Proposed slots must be after {{ compared_value }}")
      * @Assert\DateTime
      * @Assert\NotBlank()
      *

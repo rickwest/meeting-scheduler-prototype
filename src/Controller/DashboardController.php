@@ -29,7 +29,7 @@ class DashboardController extends AbstractController
                 return $meeting->getInitiator() === $this->getUser();
             }),
             'scheduled' => array_filter($all, function ($meeting) {
-                return $meeting->getScheduledSlot();
+                return null !== $meeting->getScheduledSlot();
             }),
             'proposed' => $proposed,
             'notifications' => $this->getUser()->getNotifications(),

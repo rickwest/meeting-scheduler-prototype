@@ -8,6 +8,19 @@ class Scheduler
 {
     public function schedule(Meeting $meeting)
     {
+        // Try and negotiate a slot
+        if (!$this->negotiateSlot($meeting)) {
+            return;
+        }
+
+        // Try and negotiate Location
+        $this->negotiateLocation($meeting);
+    }
+
+    public function negotiateSlot(Meeting $meeting)
+    {
+        $meeting->setScheduledSlot(null);
+
         // Assumption - A meeting can't be scheduled if all the important participants haven't responded.
         $importantUsers = [];
         $nonImportantUsers = [];
@@ -32,24 +45,26 @@ class Scheduler
         }
 
         // Need at least half of the non important participants to have responded before we can proceed
-        if (count($nonImportantResponses) < (count($nonImportantUsers) / 2)) {
-            return;
+        if ((count($nonImportantUsers) > 0) && (count($nonImportantResponses) <= (count($nonImportantUsers) / 2))) {
+            return false;
         }
 
         // Can't be scheduled because not all important users have responded.
         // Can we do something else to resolve this conflict, for example, send reminder, offer a delegate?
         if (count($importantUsers) !== count($importantResponses)) {
-            return;
+            return false;
         }
 
         // Try and find a date
-
         $preferredSlots = [];
         $excludedSlots = [];
 
         foreach ($meeting->getParticipantResponses() as $response) {
             $preferredSlots = array_merge($preferredSlots, $response->getPreferenceSet()->toArray());
-            $excludedSlots = array_merge($excludedSlots, $response->getExclusionSet()->toArray());
+
+            if ($meeting->userIsImportant($response->getUser())) {
+                $excludedSlots = array_merge($excludedSlots, $response->getExclusionSet()->toArray());
+            }
         }
 
         // Remove preferred slots that are in excluded slots
@@ -65,15 +80,15 @@ class Scheduler
             // For now just take the first but might want to take the most recent in future.
             $meeting->setScheduledSlot($preferredSlots[0]);
 
-            return $meeting;
+            return true;
         }
 
-        $allSlots = $meeting->getProposedSlots();
+        $allSlots = array_merge([], $meeting->getProposedSlots()->toArray());
 
-        foreach ($allSlots as $allSlot) {
+        foreach ($allSlots as $key => $allSlot) {
             foreach ($excludedSlots as $excludedSlot) {
-                if (isset($allSlot) && $allSlot === $excludedSlot) {
-                    unset($allSlot);
+                if (isset($allSlot) && $allSlot->getDate() === $excludedSlot->getDate()) {
+                    unset($allSlots[$key]);
                 }
             }
         }
@@ -81,9 +96,13 @@ class Scheduler
         if (count($allSlots) > 0) {
             $meeting->setScheduledSlot($allSlots[0]);
 
-            return $meeting;
+            return true;
         }
 
-        return $meeting;
+        return false;
+    }
+
+    public function negotiateLocation(Meeting $meeting)
+    {
     }
 }

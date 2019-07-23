@@ -12,6 +12,8 @@
         </div>
         <div class="card-body">
             <p><strong>{{ meeting.initiator.username|capitalize }} </strong>has invited you to the meeting <strong>'{{ meeting.title }}'</strong>.</p>
+            <p><em>{{ meeting.description ? meeting.description : '' }}</em></p>
+            <hr>
             <p>Please indicate the dates/times on which you would prefer the meeting to take place and also the dates that you cannot attend.</p>
             <hr>
             {{ form_start(form) }}

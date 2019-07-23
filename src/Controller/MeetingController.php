@@ -121,7 +121,7 @@ class MeetingController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($participantResponse);
 
-            if ($participantResponse->allExcluded()) {
+            if ($participantResponse->allExcluded() && $meeting->userIsImportant($participantResponse->getUser())) {
                 $notification = new Notification();
                 $notification->setTitle('Cannot schedule meeting!');
                 $notification->setMessage($this->getUser()->getUsername().' is unable to attend your meeting <b>'.$meeting->getTitle().'</b>. To schedule this meeting you must remove '.$this->getUser()->getUsername().' as a participant or propose some additional slots.');
@@ -129,17 +129,15 @@ class MeetingController extends AbstractController
                 $notification->setRead(false);
                 $entityManager->persist($notification);
             }
-
             $entityManager->flush();
-
             // Try and schedule meeting
             $scheduler->schedule($meeting);
 
+            $entityManager->flush();
+
             $this->addFlash('success', 'Response saved successfully.');
 
-            return $this->redirectToRoute('meeting_response', [
-                'id' => $meeting->getId(),
-            ]);
+            return $this->redirectToRoute('dashboard');
         }
 
         return $this->render('meeting/response.html.twig', [

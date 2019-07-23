@@ -66,8 +66,8 @@
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Description</th>
                         <th>Responded</th>
+                        <th>Meeting Status</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -75,8 +75,8 @@
                     {% for meeting in proposed %}
                         <tr>
                             <td>{{ meeting.title }}</td>
-                            <td>{{ meeting.description }}</td>
                             <td>{% if meeting.userHasResponded(app.user) %}<i class="fa fa-check text-success"></i>{% else %}<i class="fa fa-times text-danger"></i>{% endif %}</td>
+                            <td><span class="badge badge-pill badge-{{ meeting.status == 'Scheduled' ? 'success' : 'warning' }}">{{ meeting.status }}</span></td>
                             <td>
                                 <a href="{{ path('meeting_response', {'id': meeting.id}) }}" class="btn btn-sm btn-info">{{ meeting.userHasResponded(app.user) ? 'Edit Reponse' : 'Respond' }}</a>
                             </td>
@@ -103,6 +103,7 @@
                     <thead>
                     <tr>
                         <th>Title</th>
+                        <th>Description</th>
                         <th>Scheduled Date</th>
 {#                        <th>actions</th>#}
                     </tr>
@@ -111,8 +112,8 @@
                     {% for meeting in scheduled %}
                         <tr>
                             <td>{{ meeting.title }}</td>
+                            <td>{{ meeting.description }}</td>
                             <td>{{ meeting.scheduledSlot.date|date('d/M/y H:i') }}</td>
-{#                            <td>{{ meeting.description }}</td>#}
 {#                            <td>#}
 {#                                <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>#}
 {#                            </td>#}
