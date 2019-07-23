@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Meeting;
 use App\Entity\Notification;
+use App\Helper\DemoHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,9 +17,13 @@ class DemoResetCommand extends Command
     /** @var EntityManagerInterface */
     private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    /** @var DemoHelper */
+    private $helper;
+
+    public function __construct(EntityManagerInterface $em, DemoHelper $helper)
     {
         $this->em = $em;
+        $this->helper = $helper;
 
         parent::__construct();
     }
@@ -38,7 +43,6 @@ class DemoResetCommand extends Command
             ++$deleted;
         }
 
-        $this->em->flush();
         $output->writeln($deleted.' meetings deleted.');
 
         $notifications = $this->em->getRepository(Notification::class)->findAll();
@@ -48,5 +52,10 @@ class DemoResetCommand extends Command
             ++$deleted;
         }
         $output->writeln('Notifications deleted.');
+
+        $this->em->flush();
+
+        // Create Demo System
+        $this->helper->createDemoSystem();
     }
 }
