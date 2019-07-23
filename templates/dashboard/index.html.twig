@@ -28,7 +28,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Responses</th>
-                        <th>Status</th>
+                        <th>Meeting Status</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -37,7 +37,7 @@
                         <tr>
                             <td>{{ meeting.title }}</td>
                             <td>{{ meeting.countResponses }} / {{ meeting.countParticipants }}</td>
-                            <td><span class="badge badge-warning">{{ meeting.status }}</span></td>
+                            <td><span class="badge badge-pill badge-{% if meeting.status == 'Scheduled' %}success{% elseif meeting.status == 'Action Required' %}danger{% else %}warning{% endif %}">{{ meeting.status }}</span></td>
                             <td>
                                 <a class="btn btn-sm btn-info" href="{{ path('meeting_edit', {'id': meeting.id}) }}">Edit Meeting</a>
                             </td>
@@ -76,7 +76,7 @@
                         <tr>
                             <td>{{ meeting.title }}</td>
                             <td>{% if meeting.userHasResponded(app.user) %}<i class="fa fa-check text-success"></i>{% else %}<i class="fa fa-times text-danger"></i>{% endif %}</td>
-                            <td><span class="badge badge-pill badge-{{ meeting.status == 'Scheduled' ? 'success' : 'warning' }}">{{ meeting.status }}</span></td>
+                            <td><span class="badge badge-pill badge-{% if meeting.status == 'Scheduled' %}success{% elseif meeting.status == 'Action Required' %}danger{% else %}warning{% endif %}">{{ meeting.status }}</span></td>
                             <td>
                                 <a href="{{ path('meeting_response', {'id': meeting.id}) }}" class="btn btn-sm btn-info">{{ meeting.userHasResponded(app.user) ? 'Edit Reponse' : 'Respond' }}</a>
                             </td>
@@ -103,20 +103,16 @@
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Description</th>
+                        <th>Location</th>
                         <th>Scheduled Date</th>
-{#                        <th>actions</th>#}
                     </tr>
                     </thead>
                     <tbody>
                     {% for meeting in scheduled %}
                         <tr>
                             <td>{{ meeting.title }}</td>
-                            <td>{{ meeting.description }}</td>
+                            <td>{{ meeting.location ? meeting.location.name : '-' }}</td>
                             <td>{{ meeting.scheduledSlot.date|date('d/M/y H:i') }}</td>
-{#                            <td>#}
-{#                                <a href="{{ path('meeting_edit', {'id': meeting.id}) }}">edit</a>#}
-{#                            </td>#}
                         </tr>
                     {% endfor %}
                     </tbody>

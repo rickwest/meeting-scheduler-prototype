@@ -70,6 +70,11 @@ class Meeting
      */
     private $participants;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Location")
+     */
+    private $Location;
+
     public function __construct()
     {
         $this->proposedSlots = new ArrayCollection();
@@ -302,5 +307,17 @@ class Meeting
                 return;
             }
         }
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->Location;
+    }
+
+    public function setLocation(?Location $Location): self
+    {
+        $this->Location = $Location;
+
+        return $this;
     }
 }

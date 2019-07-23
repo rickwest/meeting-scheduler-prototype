@@ -2,10 +2,20 @@
 
 namespace App\Meeting;
 
+use App\Entity\Location;
 use App\Entity\Meeting;
+use App\Entity\Slot;
+use Doctrine\ORM\EntityManagerInterface;
 
 class Scheduler
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     public function schedule(Meeting $meeting)
     {
         // Try and negotiate a slot
@@ -77,6 +87,9 @@ class Scheduler
         }
 
         if (count($preferredSlots) > 0) {
+            usort($preferredSlots, function (Slot $a, Slot $b) {
+                return $a->getDate() > $b->getDate() ? 1 : -1;
+            });
             // For now just take the first but might want to take the most recent in future.
             $meeting->setScheduledSlot($preferredSlots[0]);
 
@@ -94,6 +107,9 @@ class Scheduler
         }
 
         if (count($allSlots) > 0) {
+            usort($preferredSlots, function (Slot $a, Slot $b) {
+                return $a->getDate() > $b->getDate() ? 1 : -1;
+            });
             $meeting->setScheduledSlot($allSlots[0]);
 
             return true;
@@ -104,5 +120,18 @@ class Scheduler
 
     public function negotiateLocation(Meeting $meeting)
     {
+        $locations = $this->em->getRepository(Location::class)->findAll();
+
+        $preferredLocations = [];
+        foreach ($meeting->getParticipantResponses() as $responses) {
+            if ($responses->getPreferredLocation()) {
+                $preferredLocations[] = $responses->getPreferredLocation();
+            }
+        }
+        if (count($preferredLocations) > 0) {
+            $meeting->setLocation($preferredLocations[0]);
+        } else {
+            $meeting->setLocation($locations[array_rand($locations)]);
+        }
     }
 }
