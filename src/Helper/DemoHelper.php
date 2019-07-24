@@ -18,13 +18,10 @@ class DemoHelper
     /** @var User[] */
     private $users = [];
 
-    private $locations = [];
-
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->usersByUsername();
-        $this->locationsByName();
     }
 
     public function usersByUsername()
@@ -34,16 +31,6 @@ class DemoHelper
         /** @var User $user */
         foreach ($users as $user) {
             $this->users[$user->getUsername()] = $user;
-        }
-    }
-
-    public function locationsByName()
-    {
-        $locations = $this->em->getRepository(Location::class)->findAll();
-
-        /** @var Location $location */
-        foreach ($locations as $location) {
-            $this->locations[$location->getName()] = $location;
         }
     }
 
@@ -155,6 +142,51 @@ class DemoHelper
 
         $this->em->persist($participantResponse);
         $this->em->persist($meeting);
+        $this->em->flush();
+
+        // User Story 8 - When a meeting is scheduled but clashes with a room due to equipment requirements, room with not requirements is changed.
+        $meeting = new Meeting();
+        $meeting->setTitle('A Previously Scheduled Meeting');
+        $meeting->setDescription('A meeting for the user story 8 acceptance test.');
+        $meeting->setInitiator($this->users['Steve']);
+
+        $meeting->addProposedSlot($this->slot('2019-09-01 10:45:00'));
+
+        $participants = [$this->users['John'], $this->users['Nick'], $this->users['Matt']];
+        foreach ($participants as $participant) {
+            $meeting->addParticipant($this->participant($participant, true));
+            $participantResponse = new ParticipantResponse();
+            $participantResponse->setMeeting($meeting);
+            $participantResponse->setUser($participant);
+            $this->em->persist($participantResponse);
+        }
+        $meeting->setScheduledSlot($meeting->getProposedSlots()->first());
+
+        /** @var Location $location */
+        $location = $this->em->getRepository(Location::class)->findOneBy(['name' => 'Meeting Room 1']);
+        $meeting->setLocation($location);
+
+        $this->em->persist($meeting);
+        $this->em->flush();
+
+        $meeting2 = new Meeting();
+        $meeting2->setTitle('User Story 8');
+        $meeting2->setDescription('A meeting for the user story 8 acceptance test.');
+        $meeting2->setInitiator($this->users['Alex']);
+
+        $meeting2->addProposedSlot($this->slot('2019-09-01 10:45:00'));
+        $meeting2->addParticipant($this->participant($this->users['Brian'], false));
+
+        $participants = [$this->users['James'], $this->users['Josh']];
+        foreach ($participants as $participant) {
+            $meeting2->addParticipant($this->participant($participant, false));
+            $participantResponse = new ParticipantResponse();
+            $participantResponse->setMeeting($meeting2);
+            $participantResponse->setUser($participant);
+            $this->em->persist($participantResponse);
+        }
+
+        $this->em->persist($meeting2);
         $this->em->flush();
     }
 

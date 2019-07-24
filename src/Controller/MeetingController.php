@@ -103,12 +103,16 @@ class MeetingController extends AbstractController
      */
     public function response(Request $request, Meeting $meeting, Scheduler $scheduler)
     {
+        $entityManager = $this->getDoctrine()->getManager();
+
         $participantResponse = $meeting->getResponseForUser($this->getUser());
 
         if (is_null($participantResponse)) {
             $participantResponse = new ParticipantResponse();
             $participantResponse->setMeeting($meeting);
             $participantResponse->setUser($this->getUser());
+            $entityManager->persist($participantResponse);
+            $entityManager->flush();
         }
 
         $form = $this->createForm(ParticipantResponseType::class, $participantResponse, [
@@ -118,9 +122,6 @@ class MeetingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($participantResponse);
-
             if ($participantResponse->allExcluded() && $meeting->userIsImportant($participantResponse->getUser())) {
                 $notification = new Notification();
                 $notification->setTitle('Cannot schedule meeting!');
@@ -129,7 +130,7 @@ class MeetingController extends AbstractController
                 $notification->setRead(false);
                 $entityManager->persist($notification);
             }
-            $entityManager->flush();
+
             // Try and schedule meeting
             $scheduler->schedule($meeting);
 

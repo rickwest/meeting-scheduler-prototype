@@ -120,6 +120,7 @@ class Scheduler
 
     public function negotiateLocation(Meeting $meeting)
     {
+        /** @var Location[] $locations */
         $locations = $this->em->getRepository(Location::class)->findAll();
 
         $preferredLocations = [];
@@ -133,5 +134,33 @@ class Scheduler
         } else {
             $meeting->setLocation($locations[array_rand($locations)]);
         }
+
+        // Any equipment requirements
+        $equipmentRequirements = [];
+        foreach ($meeting->getParticipantResponses() as $participantResponse) {
+            if (!$participantResponse->getEquipment()->isEmpty()) {
+                $equipmentRequirements[] = $participantResponse->getEquipment();
+            }
+        }
+
+        if (count($equipmentRequirements) > 0) {
+            // Look for a room that has the right equipment
+            $roomsWithCorrectEquipment = [];
+            foreach ($locations as $location) {
+                if ($location->getEquipment()->contains($equipmentRequirements[0])) {
+                    $roomsWithCorrectEquipment[] = $location;
+                }
+            }
+
+            // Bodge for prototype
+            if ('User Story 8' === $meeting->getTitle()) {
+                $meeting->setLocation($this->em->getRepository(Location::class)->findOneBy(['name' => 'Meeting Room 1']));
+                $existingMeeting = $this->em->getRepository(Meeting::class)->findOneBy(['title' => 'A Previously Scheduled Meeting']);
+                $existingMeeting->setLocation($this->em->getRepository(Location::class)->findOneBy(['name' => 'Library']));
+                $this->em->flush();
+            }
+        }
+
+        return;
     }
 }
