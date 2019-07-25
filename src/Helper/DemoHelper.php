@@ -79,7 +79,7 @@ class DemoHelper
         $meeting->setDescription('A meeting for the user story 5 acceptance test.');
         $meeting->setInitiator($this->users['John']);
 
-        $slots = ['2019-10-10 10:00:00', '2019-10-09 11:45:00', '2019-09-04 16:15:00'];
+        $slots = ['2019-10-10 10:30:00', '2019-10-09 11:45:00', '2019-09-04 16:15:00'];
         foreach ($slots as $slot) {
             $meeting->addProposedSlot($this->slot($slot));
         }
@@ -102,7 +102,7 @@ class DemoHelper
         $meeting->setDescription('A meeting for the user story 6 acceptance test.');
         $meeting->setInitiator($this->users['Brian']);
 
-        $meeting->addProposedSlot($this->slot('2019-09-09 09:00:00'));
+        $meeting->addProposedSlot($this->slot('2019-09-09 09:30:00'));
 
         $meeting->addParticipant($this->participant($this->users['Alex'], false));
         $meeting->addParticipant($this->participant($this->users['James'], true));
