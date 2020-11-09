@@ -24,7 +24,10 @@ class SlotType extends AbstractType
                     'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
                     'hour' => 'Hour', 'minute' => 'Minute', 'second' => 'Second',
                 ],
-                'years' => ['2019'],
+                'years' => [
+                    (new \DateTime())->format('Y'),
+                    (new \DateTime())->add(new \DateInterval('P1Y'))->format('Y'),
+                ],
                 'hours' => ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'],
                 'minutes' => ['00', '15', '30', '45'],
             ])
